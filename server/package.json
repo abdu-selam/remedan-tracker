@@ -1,0 +1,12 @@
+{
+  "name": "remedan-planner-server",
+  "version": "1.0.0",
+  "description": "server of remedan planner app that help muslims plan and track their progress in the remeda",
+  "license": "ISC",
+  "author": "abduselam awel",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
