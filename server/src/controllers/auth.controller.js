@@ -126,4 +126,76 @@ const verifyEmail = async (req, res) => {
   }
 };
 
-module.exports = { signup, verifyEmail };
+const logIn = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({
+      message: "All fields required",
+    });
+  }
+
+  try {
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      return res.status(409).json({
+        message: "Invalid Cridentials",
+      });
+    }
+
+    const isSame = await bcryptjs.compare(password, user.password);
+
+    if (!isSame) {
+      return res.status(409).json({
+        message: "Invalid Cridentials",
+      });
+    }
+
+    if (!user.isVerified) {
+      return res.status(401).json({
+        message: "verify email",
+      });
+    }
+
+    const payload = {
+      id: user._id,
+      email: user.email,
+    };
+
+    const accessToken = genAccess(payload);
+    const refreshToken = genRefresh(payload);
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: ENV.NODE_ENV === "production",
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: ENV.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    user.refresh.push({ token: refreshToken });
+
+    await user.save();
+
+    res.status(200).json({
+      message: "log in",
+      user: {
+        name: user.name,
+        email: user.email,
+        profile: user.profile.pic,
+      },
+    });
+  } catch (error) {
+    console.log("error on log in controller", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+module.exports = { signup, verifyEmail, login };
