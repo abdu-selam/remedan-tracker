@@ -5,9 +5,10 @@
   "license": "ISC",
   "author": "abduselam awel",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": ""
+    "dev": "nodemon .",
+    "start": "node ."
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
