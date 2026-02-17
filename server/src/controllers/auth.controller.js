@@ -198,4 +198,27 @@ const logIn = async (req, res) => {
   }
 };
 
-module.exports = { signup, verifyEmail, login };
+const logOut = async (req, res) => {
+  try {
+    const refresh = req.cookies.refreshToken;
+    req.user.refresh = req.user.refresh.filter(
+      (item) => item.token !== refresh,
+    );
+
+    await user.save();
+
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+
+    res.status(204).json({
+      message: "Loged out",
+    });
+  } catch (error) {
+    console.log("error on log out controller", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+module.exports = { signup, verifyEmail, logIn, logOut };
