@@ -6,6 +6,7 @@ const {
   logOut,
   resendVerify,
   forgotPassword,
+  resetPassword,
 } = require("../controllers/auth.controller");
 
 const {
@@ -21,6 +22,7 @@ route.post("/verify", verifyEmail);
 route.post("/login", logIn);
 route.post("/logout", protected, logOut);
 route.post("/resend", tokenCount, resendVerify);
-route.post("/forgor", forgotProtector, forgotPassword);
+route.post("/forgot", forgotProtector, forgotPassword);
+route.post("/reset", resetPassword);
 
 module.exports = route;

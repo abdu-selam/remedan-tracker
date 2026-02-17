@@ -280,4 +280,53 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-module.exports = { signup, verifyEmail, logIn, logOut, resendVerify,forgotPassword };
+const resetPassword = async (req, res) => {
+  const { otp, email, password } = req.body;
+
+  if (!otp || !email || !password) {
+    return res.status(400).json({
+      message: "all fields required",
+    });
+  }
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(409).json({
+        message: "Invalid cridentials",
+      });
+    }
+
+    if (user.forgotPassword.code !== otp) {
+      return res.status(409).json({
+        message: "Invalid cridentials",
+      });
+    }
+
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(password, salt);
+
+    user.password = hashedPassword;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "password updated",
+    });
+  } catch (error) {
+    console.log("error on reset password controller", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+module.exports = {
+  signup,
+  verifyEmail,
+  logIn,
+  logOut,
+  resendVerify,
+  forgotPassword,
+  resetPassword,
+};
