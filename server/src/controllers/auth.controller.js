@@ -230,14 +230,12 @@ const resendVerify = async (req, res) => {
     };
 
     await req.user.save();
-    const site = await siteData();
 
     await sendEmail(
       email,
       {
-        name: `${req.user.firstName} ${req.user.lastName}`,
+        name: req.user.name,
         token: req.user.emailVerify.token,
-        company: site.name,
       },
       "verify-email",
     );
@@ -253,4 +251,33 @@ const resendVerify = async (req, res) => {
   }
 };
 
-module.exports = { signup, verifyEmail, logIn, logOut, resendVerify };
+const forgotPassword = async (req, res) => {
+  const code = genOTP();
+  try {
+    req.user.forgotPassword = {
+      code,
+    };
+
+    await req.user.save();
+
+    await sendEmail(
+      email,
+      {
+        name: req.user.name,
+        token: req.user.forgotPassword.code,
+      },
+      "forgot-password",
+    );
+
+    res.status(200).json({
+      message: "OTP sent",
+    });
+  } catch (error) {
+    console.log("error on forgot password controller", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+module.exports = { signup, verifyEmail, logIn, logOut, resendVerify,forgotPassword };

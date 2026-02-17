@@ -48,7 +48,10 @@ const userSchema = mongoose.Schema(
         type: Date,
         default: Date.now() + 25 * 60 * 1000,
       },
-      createdAt: Date
+      createdAt: {
+        type: Date,
+        default: Date.now() + 25 * 60 * 1000,
+      }
     },
     password: String,
   },

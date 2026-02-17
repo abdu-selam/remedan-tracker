@@ -89,4 +89,42 @@ const tokenCount = async (req, res, next) => {
   }
 };
 
-module.exports = { protected, tokenCount };
+const forgotProtector = async (req, res, next) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(401).json({
+      message: "Email required",
+    });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(409).json({
+        message: "Invalid cridentials",
+      });
+    }
+
+    const { createdAt } = user.forgotPassword;
+
+    if (createdAt) {
+      const threeDay = 1000 * 60 * 60 * 72;
+
+      if (Date.now() - createdAt <= threeDay) {
+        return res.status(429).json({
+          message: "limit reached",
+          data: createdAt + threeDay,
+        });
+      }
+    }
+    res.user = user;
+    next();
+  } catch (error) {
+    console.log("Error in token count middleware", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+module.exports = { protected, tokenCount, forgotProtector };
