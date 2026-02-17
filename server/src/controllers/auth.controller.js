@@ -63,4 +63,67 @@ const signup = async (req, res) => {
   }
 };
 
-module.exports = { signup };
+const verifyEmail = async (req, res) => {
+  const token = req.body.token;
+  try {
+    const user = await User.findOne({
+      "emailVerify.token": token,
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid Token",
+      });
+    }
+
+    if (user.emailVerify.expiredAt < Date.now()) {
+      return res.status(400).json({
+        message: "Expired Token",
+      });
+    }
+
+    user.isVerified = true;
+    user.emailVerify.token = "";
+    user.emailVerify.expiredAt = Date.now() - 1000;
+
+    const payload = {
+      id: user._id,
+      email: user.email,
+    };
+
+    const accessToken = genAccess(payload);
+    const refreshToken = genRefresh(payload);
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: ENV.NODE_ENV === "production",
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: ENV.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    user.refresh.push({ token: refreshToken });
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Email verified",
+      user: {
+        name,
+        email,
+        profile: user.profile.pic,
+      },
+    });
+  } catch (error) {
+    console.log("error on verify email controller", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+module.exports = { signup, verifyEmail };
