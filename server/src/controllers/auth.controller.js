@@ -221,4 +221,36 @@ const logOut = async (req, res) => {
   }
 };
 
-module.exports = { signup, verifyEmail, logIn, logOut };
+const resendVerify = async (req, res) => {
+  try {
+    req.user.emailVerify = {
+      token: genOTP(),
+      expiredAt: Date.now() + 24 * 60 * 60 * 1000,
+      tokenCount: [...this.tokenCount, Date.now()],
+    };
+
+    await req.user.save();
+    const site = await siteData();
+
+    await sendEmail(
+      email,
+      {
+        name: `${req.user.firstName} ${req.user.lastName}`,
+        token: req.user.emailVerify.token,
+        company: site.name,
+      },
+      "verify-email",
+    );
+
+    res.status(200).json({
+      message: "Email sent",
+    });
+  } catch (error) {
+    console.log("error on resendVerify controller", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+module.exports = { signup, verifyEmail, logIn, logOut, resendVerify };
