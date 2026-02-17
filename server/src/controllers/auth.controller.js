@@ -321,6 +321,149 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const refreshTokenFunc = async (req, res) => {
+  const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
+    return res.status(400).json({
+      message: "token missed",
+    });
+  }
+
+  try {
+    if (refreshToken.exp < Date.now()) {
+      return res.status(400).json({
+        message: "token expired",
+      });
+    }
+    const user = await User.findOne({
+      "refresh.token": refreshToken,
+    });
+
+    if (!user) {
+      return res.status(409).json({
+        message: "user not found",
+      });
+    }
+
+    const payload = {
+      id: user._id,
+      email: user.email,
+    };
+
+    const access_Token = genAccess(payload);
+    const refresh_Token = genRefresh(payload);
+
+    res.cookie("accessToken", access_Token, {
+      httpOnly: true,
+      secure: ENV.NODE_ENV === "production",
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie("refreshToken", refresh_Token, {
+      httpOnly: true,
+      secure: ENV.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    user.refresh = user.refresh.filter((t) => t.token != refreshToken);
+
+    user.refresh.push({ token: refresh_Token });
+
+    await user.save();
+    res.status(200).json({
+      message: "success",
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.log("error on refresh token controller", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+const me = async (req, res) => {
+  const { refreshToken, accessToken } = req.cookies;
+
+  if (!accessToken) {
+    return res.status(400).json({
+      message: "token missed",
+    });
+  }
+
+  try {
+    let user;
+    if (accessToken.exp < Date.now()) {
+      if (!refreshToken) {
+        return res.status(400).json({
+          message: "token missed",
+        });
+      }
+
+      if (refreshToken.exp < Date.now()) {
+        return res.status(400).json({
+          message: "token expired",
+        });
+      }
+
+      user = await User.findOne({
+        "refresh.token": refreshToken,
+      });
+
+      if (!user) {
+        return res.status(409).json({
+          message: "user not found",
+        });
+      }
+
+      const payload = {
+        id: user._id,
+        email: user.email,
+      };
+
+      const access_Token = genAccess(payload);
+      const refresh_Token = genRefresh(payload);
+
+      res.cookie("accessToken", access_Token, {
+        httpOnly: true,
+        secure: ENV.NODE_ENV === "production",
+        maxAge: 15 * 60 * 1000,
+      });
+
+      res.cookie("refreshToken", refresh_Token, {
+        httpOnly: true,
+        secure: ENV.NODE_ENV === "production",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      user.refresh = user.refresh.filter((t) => t.token != refreshToken);
+      user.refresh.push({ token: refresh_Token });
+
+      await user.save();
+    } else {
+      const { email } = verifyAccess(accessToken);
+      user = await User.findOne({ email });
+    }
+
+    res.status(200).json({
+      message: "success",
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.log("error on me controller", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   signup,
   verifyEmail,
@@ -329,4 +472,6 @@ module.exports = {
   resendVerify,
   forgotPassword,
   resetPassword,
+  refreshTokenFunc,
+  me,
 };

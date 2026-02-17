@@ -7,6 +7,8 @@ const {
   resendVerify,
   forgotPassword,
   resetPassword,
+  refreshTokenFunc,
+  me,
 } = require("../controllers/auth.controller");
 
 const {
@@ -18,11 +20,16 @@ const {
 const route = Router();
 
 route.post("/register", signup);
-route.post("/verify", verifyEmail);
 route.post("/login", logIn);
-route.post("/logout", protected, logOut);
+route.delete("/logout", protected, logOut);
+
+route.post("/verify", verifyEmail);
 route.post("/resend", tokenCount, resendVerify);
+
 route.post("/forgot", forgotProtector, forgotPassword);
-route.post("/reset", resetPassword);
+route.put("/reset", resetPassword);
+
+route.get("/refresh", refreshTokenFunc);
+route.get("/me", me);
 
 module.exports = route;
