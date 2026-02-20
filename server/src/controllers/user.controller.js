@@ -61,11 +61,12 @@ const initial = async (req, res) => {
     req.user.ibada[year] = {
       khitam: {
         amount: 0,
+        page: 0,
         limit: khitamValidator(khitam) ?? 1,
       },
       terawih: {
         amount: 0,
-        limit: khitamValidator(khitam) ?? 29,
+        limit: terawihValidator(terawih) ?? 29,
       },
     };
 

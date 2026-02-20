@@ -1,0 +1,19 @@
+const { Router } = require("express");
+
+const {
+  getData,
+  tick,
+  updatePlan,
+} = require("../controllers/quran.controller");
+const { protected } = require("../middlewares/auth.middleware");
+
+const route = Router();
+
+route.use(protected);
+
+route.get("/", getData);
+
+route.put("/", tick);
+route.put("/plan", updatePlan);
+
+module.exports = route;
