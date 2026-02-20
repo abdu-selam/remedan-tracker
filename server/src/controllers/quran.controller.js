@@ -70,7 +70,7 @@ const tick = async (req, res) => {
       data,
     });
   } catch (error) {
-    console.log("Error on the tick coltroller", error);
+    console.log("Error on the tick quran coltroller", error);
     res.status(500).json({
       message: "Interna server error",
     });
@@ -82,7 +82,8 @@ const updatePlan = async (req, res) => {
     const { amount } = req.body;
 
     const year = `${new Date().getFullYear()}`;
-    req.user.ibada[year].khitam.limit = khitamValidator(amount);
+    req.user.ibada[year].khitam.limit =
+      khitamValidator(amount) ?? req.user.ibada[year].khitam.limit;
     await req.user.save();
     req.status(204).json({
       message: "Success",

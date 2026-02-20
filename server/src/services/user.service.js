@@ -97,10 +97,28 @@ const quranScheduler = (data) => {
   return result;
 };
 
+const terawihScheduler = (data) => {
+  const days = Array.from({ length: 30 }, (_, i) => `${i + 1}`);
+  const result = [];
+
+  days.forEach((day) => {
+    const date = data[day];
+    const obj = {
+      remedan: day,
+      done: date.terawih ?? false
+    };
+
+    result.push(obj);
+  });
+
+  return result;
+};
+
 module.exports = {
   khitamCalculator,
   singleTypeProgress,
   totalProgress,
   quranScheduler,
   totalTodayProgress,
+  terawihScheduler
 };
