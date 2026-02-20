@@ -97,6 +97,40 @@ const quranScheduler = (data) => {
   return result;
 };
 
+const zhikrScheduler = (data) => {
+  const days = Array.from({ length: 30 }, (_, i) => `${i + 1}`);
+  const result = [];
+
+  const zhikrSample = data[days[0]].zhikrs;
+
+  days.forEach((day) => {
+    const date = data[day];
+
+    const zhikrData = date.zhikrs;
+    for (const key in zhikrData) {
+      const zhikr = zhikrData[key];
+      let progress = 0;
+      if (key == "special") {
+        progress +=
+          (zhikr.night.done + zhikr.morning.done + zhikr.sleep.done) / 3;
+      } else {
+        progress += zhikr.amount / zhikr.limit;
+      }
+
+      zhikrData[key].progress = progress;
+    }
+
+    const obj = {
+      remedan: day,
+      zhikr: zhikrData,
+    };
+
+    result.push(obj);
+  });
+
+  return result;
+};
+
 const terawihScheduler = (data) => {
   const days = Array.from({ length: 30 }, (_, i) => `${i + 1}`);
   const result = [];
@@ -105,7 +139,7 @@ const terawihScheduler = (data) => {
     const date = data[day];
     const obj = {
       remedan: day,
-      done: date.terawih ?? false
+      done: date.terawih ?? false,
     };
 
     result.push(obj);
@@ -120,5 +154,6 @@ module.exports = {
   totalProgress,
   quranScheduler,
   totalTodayProgress,
-  terawihScheduler
+  terawihScheduler,
+  zhikrScheduler,
 };

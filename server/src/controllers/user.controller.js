@@ -14,7 +14,7 @@ const initial = async (req, res) => {
 
     const now = new Date();
     const year = `${now.getFullYear()}`;
-    const date = `${todayHijri()}`;
+    const date = todayHijri();
 
     let { ibada } = req.user;
 
@@ -70,15 +70,19 @@ const initial = async (req, res) => {
       },
     };
 
-    req.user.ibada[year][date] = {
-      terawih: false,
-      quran: {
-        amount: 0,
-        limit: khitamCalculator(req.user.ibada[year].khitam),
-      },
-      zhikrs: azhkars,
-      date: Date.now(),
-    };
+    const dates = Array.from({ length: 30 }, (_, i) => `${i + 1}`);
+
+    dates.forEach((date) => {
+      req.user.ibada[year][date] = {
+        terawih: false,
+        quran: {
+          amount: 0,
+          limit: khitamCalculator(req.user.ibada[year].khitam),
+        },
+        zhikrs: azhkars,
+        date: Date.now(),
+      };
+    });
 
     await req.user.save();
 
