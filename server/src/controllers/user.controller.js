@@ -14,11 +14,12 @@ const initial = async (req, res) => {
 
     const now = new Date();
     const year = `${now.getFullYear()}`;
-    const date = todayHijri();
+    const today = todayHijri();
 
-    let { ibada } = req.user;
+    if (!req.user.ibada) req.user.ibada = {};
+    const userIbada = req.user.ibada;
 
-    if (ibada) {
+    if (userIbada[year]) {
       return res.status(200).json({
         message: "Already initiate",
       });
@@ -26,22 +27,13 @@ const initial = async (req, res) => {
 
     const azhkars = {
       special: {
-        night: {
-          description: "",
-          done: false,
-        },
-        morning: {
-          description: "",
-          done: false,
-        },
-        sleep: {
-          description: "",
-          done: false,
-        },
+        night: { description: "", done: false },
+        morning: { description: "", done: false },
+        sleep: { description: "", done: false },
       },
     };
 
-    if (zhikrs.length) {
+    if (zhikrs && zhikrs.length) {
       for (const obj of zhikrs) {
         const { name, description, limit } = obj;
         const number = Number(limit);
@@ -57,8 +49,7 @@ const initial = async (req, res) => {
       }
     }
 
-    req.user.ibada = {};
-    req.user.ibada[year] = {
+    userIbada[year] = {
       khitam: {
         amount: 0,
         page: 0,
@@ -72,17 +63,19 @@ const initial = async (req, res) => {
 
     const dates = Array.from({ length: 30 }, (_, i) => `${i + 1}`);
 
-    dates.forEach((date) => {
-      req.user.ibada[year][date] = {
+    dates.forEach((day) => {
+      req.user.ibada[year][day] = {
         terawih: false,
         quran: {
           amount: 0,
-          limit: khitamCalculator(req.user.ibada[year].khitam),
+          limit: khitamCalculator(userIbada[year].khitam.limit),
         },
-        zhikrs: azhkars,
+        zhikrs: structuredClone(azhkars), // ✅ CRITICAL FIX
         date: Date.now(),
       };
     });
+
+    req.user.ibada.set(year, userIbada[year]);
 
     await req.user.save();
 
@@ -93,16 +86,16 @@ const initial = async (req, res) => {
           name: req.user.name,
           progress: {
             total: totalProgress(req.user, year),
-            today: totalTodayProgress(req.user.ibada[year], date),
+            today: totalTodayProgress(userIbada[year], today),
           },
         },
         ibada: {
           quran: {
             progress: singleTypeProgress("khitam", req.user, year),
-            data: quranScheduler(req.user.ibada[year]),
+            data: quranScheduler(userIbada[year]),
           },
         },
-        today: todayHijri(),
+        today,
       },
     });
   } catch (error) {

@@ -1,8 +1,9 @@
 const { emailValidator } = require("../utils/validate");
 const User = require("../models/User");
 const bcryptjs = require("bcrypt");
-const { genOTP } = require("../utils/token");
+const { genOTP, genAccess, genRefresh, verifyAccess } = require("../utils/token");
 const sendEmail = require("../utils/email");
+const ENV = require("../utils/env");
 
 const signup = async (req, res) => {
   const { name, email, password } = req.body;
@@ -91,7 +92,7 @@ const verifyEmail = async (req, res) => {
       email: user.email,
     };
 
-    const accessToken = genAccess(payload);
+    const accessToken = genAccess(payload); 
     const refreshToken = genRefresh(payload);
 
     res.cookie("accessToken", accessToken, {
@@ -113,8 +114,8 @@ const verifyEmail = async (req, res) => {
     res.status(200).json({
       message: "Email verified",
       user: {
-        name,
-        email,
+        name: user.name,
+        email: user.email,
         profile: user.profile.pic,
       },
     });
@@ -205,7 +206,7 @@ const logOut = async (req, res) => {
       (item) => item.token !== refresh,
     );
 
-    await user.save();
+    await req.user.save();
 
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
@@ -226,13 +227,13 @@ const resendVerify = async (req, res) => {
     req.user.emailVerify = {
       token: genOTP(),
       expiredAt: Date.now() + 24 * 60 * 60 * 1000,
-      tokenCount: [...this.tokenCount, Date.now()],
+      tokenCount: [...req.user.emailVerify.tokenCount, Date.now()],
     };
 
     await req.user.save();
 
     await sendEmail(
-      email,
+      req.user.email,
       {
         name: req.user.name,
         token: req.user.emailVerify.token,
@@ -256,12 +257,13 @@ const forgotPassword = async (req, res) => {
   try {
     req.user.forgotPassword = {
       code,
+      created: Date.now()
     };
 
     await req.user.save();
 
     await sendEmail(
-      email,
+      req.user.email,
       {
         name: req.user.name,
         token: req.user.forgotPassword.code,

@@ -79,7 +79,7 @@ const tokenCount = async (req, res, next) => {
       user.emailVerify.tokenCount = tokenToAdd;
       await user.save();
     }
-    res.user = user;
+    req.user = user;
     next();
   } catch (error) {
     console.log("Error in token count middleware", error);
@@ -105,19 +105,20 @@ const forgotProtector = async (req, res, next) => {
       });
     }
 
-    const { createdAt } = user.forgotPassword;
+    const { created } = user.forgotPassword;
+    console.log(created)
 
-    if (createdAt) {
+    if (created) {
       const threeDay = 1000 * 60 * 60 * 72;
 
-      if (Date.now() - createdAt <= threeDay) {
+      if (Date.now() - created <= threeDay) {
         return res.status(429).json({
           message: "limit reached",
-          data: createdAt + threeDay,
+          data: created + threeDay,
         });
       }
     }
-    res.user = user;
+    req.user = user;
     next();
   } catch (error) {
     console.log("Error in token count middleware", error);

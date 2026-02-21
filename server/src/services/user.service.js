@@ -33,7 +33,7 @@ const zhikrAmountExtractor = (data) => {
 };
 
 const totalProgress = (user, year) => {
-  const data = user.ibada[year];
+  const data = user.ibada.get(year);
   const [zhikrAmount, zhikrLimit] = zhikrAmountExtractor(data);
   const [khitamAmount, khitamLimit] = [data.khitam.amount, data.khitam.limit];
   const [terawwihAmount, terawwihLimit] = [
@@ -64,7 +64,7 @@ const totalTodayProgress = (userData, date) => {
 };
 
 const singleTypeProgress = (type, user, year) => {
-  const data = user.ibada[year];
+  const data = user.ibada.get(year);
   if (type == "zhikrs") {
     const [amount, limit] = zhikrAmountExtractor(data);
     return amount / limit;
@@ -83,11 +83,11 @@ const quranScheduler = (data) => {
     };
     if (!date) {
       obj.amount = 0;
-      obj.limit = 0;
+      obj.limit = 21;
       obj.progress = 0;
     } else {
-      obj.amount = date.quran.amount;
-      obj.limit = date.quran.limit;
+      obj.amount = date.quran.amount ?? 0;
+      obj.limit = date.quran.limit ?? 21;
       obj.progress = obj.amount / obj.limit;
     }
 

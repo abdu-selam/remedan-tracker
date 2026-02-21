@@ -1,10 +1,14 @@
-const { terawihScheduler } = require("../services/user.service");
+const {
+  terawihScheduler,
+  singleTypeProgress,
+} = require("../services/user.service");
+const { todayHijri } = require("../utils/hijriDate");
 const { terawihValidator } = require("../utils/validate");
 
 const getData = async (req, res) => {
   try {
     const year = `${new Date().getFullYear()}`;
-    const data = req.user.ibada[year];
+    const data = req.user.ibada.get(year);
 
     const terawihData = terawihScheduler(data);
     const progress = singleTypeProgress("terawih", req.user, year);
@@ -18,7 +22,7 @@ const getData = async (req, res) => {
     });
   } catch (error) {
     console.log("Error on the get terawih data controller", error);
-    res.status().json({
+    res.status(500).json({
       message: "Internal server error",
     });
   }
@@ -34,24 +38,29 @@ const tick = async (req, res) => {
     }
 
     const yearNow = `${new Date().getFullYear()}`;
-    if (year != yearNow || date != toHijri()) {
+    if (year != yearNow || date != todayHijri()) {
       return res.status(400).json({
         message: "Invalid time",
       });
     }
 
-    const current = req.user.ibada[year].terawih.amount;
-    const today = req.user.ibada[year][date].terawih;
+    const current = req.user.ibada.get(year).terawih.amount;
+    const today = req.user.ibada.get(year)[date].terawih;
 
     if (today != ticked) {
-      req.user.ibada[year].terawih.amount = ticked ? current + 1 : current - 1;
-      req.user.ibada[year][date].terawih = ticked;
+      req.user.ibada.get(year).terawih.amount = ticked
+        ? current + 1
+        : current - 1;
+      req.user.ibada.get(year)[date].terawih = ticked;
+      req.user.markModified(`ibada.${year}.terawih.amount`);
+      req.user.markModified(`ibada.${year}.${date}.terawih`);
+
       await req.user.save();
     }
 
-    res.status(204).json({
+    res.status(200).json({
       message: "Success",
-      data: req.user.ibada[year][date].terawih,
+      data: req.user.ibada.get(year)[date].terawih,
     });
   } catch (error) {
     console.log("Error on the tick terawih coltroller", error);
@@ -66,11 +75,13 @@ const updatePlan = async (req, res) => {
     const { amount } = req.body;
 
     const year = `${new Date().getFullYear()}`;
-    req.user.ibada[year].terawih.limit = terawihValidator(amount) ?? 29;
+    req.user.ibada.get(year).terawih.limit = terawihValidator(amount) ?? 29;
+    req.user.markModified(`ibada.${year}.terawih.limit`);
+
     await req.user.save();
-    req.status(204).json({
+    res.status(200).json({
       message: "Success",
-      data: req.user.ibada[year].terawih.limit,
+      data: req.user.ibada.get(year).terawih.limit,
     });
   } catch (error) {
     console.log("Error on the update terawih controller", error);

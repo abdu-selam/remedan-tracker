@@ -8,6 +8,8 @@ const ENV = {
   JWT_REFRESH: process.env.JWT_REFRESH,
   NODE_ENV: process.env.NODE_ENV,
   MONGODB_URL: process.env.MONGODB_URL,
+  SMTP_USER: process.env.SMTP_USER,
+  SMTP_KEY: process.env.SMTP_KEY,
 };
 
 module.exports = ENV;

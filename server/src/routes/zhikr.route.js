@@ -4,8 +4,11 @@ const {
   tick,
   updatePlan,
 } = require("../controllers/zhikr.controller");
+const { protected } = require("../middlewares/auth.middleware");
 
 const route = Router();
+
+route.use(protected);
 
 route.get("/", getData);
 

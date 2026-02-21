@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const authRoute = require("./routes/auth.route");
 const userRoute = require("./routes/user.route");
 const quranRoute = require("./routes/quran.route");
+const terawihRoute = require("./routes/terawih.route");
 const zhikrRoute = require("./routes/zhikr.route");
 
 const app = express();
@@ -15,6 +16,6 @@ app.use("/auth", authRoute);
 app.use("/user", userRoute);
 app.use("/quran", quranRoute);
 app.use("/terawih", terawihRoute);
-app.use("/ahikr", zhikrRoute);
+app.use("/zhikr", zhikrRoute);
 
 module.exports = app;

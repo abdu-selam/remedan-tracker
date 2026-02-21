@@ -14,12 +14,12 @@ const userSchema = mongoose.Schema(
     profile: {
       pic: {
         type: String,
-        default: ''
+        default: "",
       },
       picId: {
         type: String,
-        default: ''
-      }
+        default: "",
+      },
     },
     isVerified: {
       type: Boolean,
@@ -46,14 +46,16 @@ const userSchema = mongoose.Schema(
       code: String,
       validTo: {
         type: Date,
-        default: Date.now() + 25 * 60 * 1000,
+        default: () => Date.now() + 25 * 60 * 1000,
       },
-      createdAt: {
-        type: Date,
-        default: Date.now() + 25 * 60 * 1000,
-      }
+      created: Date,
     },
     password: String,
+    ibada: {
+      type: Map,
+      of: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
   },
   { timestamps: true },
 );

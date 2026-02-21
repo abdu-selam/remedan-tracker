@@ -1,10 +1,13 @@
-const { zhikrScheduler } = require("../services/user.service");
+const {
+  zhikrScheduler,
+  singleTypeProgress,
+} = require("../services/user.service");
 const { todayHijri } = require("../utils/hijriDate");
 
 const getData = async (req, res) => {
   try {
     const year = `${new Date().getFullYear()}`;
-    const data = req.user.ibada[year];
+    const data = req.user.ibada.get(year);
 
     const zhikrData = zhikrScheduler(data);
     const progress = singleTypeProgress("zhikrs", req.user, year);
@@ -18,7 +21,7 @@ const getData = async (req, res) => {
     });
   } catch (error) {
     console.log("Error on the get quran data controller", error);
-    res.status().json({
+    res.status(500).json({
       message: "Internal server error",
     });
   }
@@ -33,37 +36,54 @@ const tick = async (req, res) => {
       });
     }
 
-    if (!req.user.ibada[year][date].zhikrs[name]) {
+    if (
+      !req.user.ibada.get(year)[date].zhikrs[name] &&
+      !["night", "morning", "sleep"].includes(name)
+    ) {
       return res.status(401).json({
         message: "Invalid zhikr name",
       });
     }
 
     const yearNow = `${new Date().getFullYear()}`;
-    if (year != yearNow || date != toHijri()) {
+    if (year != yearNow || date != todayHijri()) {
       return res.status(400).json({
         message: "Invalid time",
       });
     }
+    const data = {};
 
-    const amountNeed =
-      amount > 0 ? amount : req.user.ibada[year][date].zhikrs[name].amount;
+    if (!["night", "morning", "sleep"].includes(name)) {
+      const amountNeed =
+        amount > 0
+          ? amount
+          : req.user.ibada.get(year)[date].zhikrs[name].amount;
 
-    const pages = req.user.ibada[year].khitam.page;
-    const khitam = pages / 604;
+      req.user.ibada.get(year)[date].zhikrs[name].amount = amountNeed;
+      req.user.markModified(`ibada.${year}.${date}.zhikrs.${name}.amount`);
+      data.amount = req.user.ibada.get(year)[date].zhikrs[name].amount;
+      data.limit = req.user.ibada.get(year)[date].zhikrs[name].limit;
+      data.progress =
+        req.user.ibada.get(year)[date].zhikrs[name].amount /
+        req.user.ibada.get(year)[date].zhikrs[name].limit;
+    } else {
+      const amountNeed = [false, true].includes(amount)
+        ? amount
+        : req.user.ibada.get(year)[date].zhikrs.special[name].done;
 
-    req.user.ibada[year][date].zhikrs[name].amount = amountNeed;
+      req.user.ibada.get(year)[date].zhikrs.special[name].done = amountNeed;
+      req.user.markModified(
+        `ibada.${year}.${date}.zhikrs.special.${name}.done`,
+      );
+      data.amount = req.user.ibada.get(year)[date].zhikrs.special[name].done;
+      data.limit = 1;
+      data.progress = Number(
+        req.user.ibada.get(year)[date].zhikrs.special[name].done,
+      );
+    }
 
-    const data = {
-      amount: req.user.ibada[year][date].zhikrs[name].amount,
-      limit: req.user.ibada[year][date].zhikrs[name].limit,
-      progress:
-        req.user.ibada[year][date].zhikrs[name].amount /
-        req.user.ibada[year][date].zhikrs[name].limit,
-    };
-
-    await res.user.save();
-    res.status(204).json({
+    await req.user.save();
+    res.status(200).json({
       message: "Success",
       data,
     });
@@ -84,8 +104,9 @@ const updatePlan = async (req, res) => {
         message: "amount and name required",
       });
     }
+    const year = `${new Date().getFullYear()}`;
 
-    if (!req.user.ibada[year][date].zhikrs[name]) {
+    if (!req.user.ibada.get(year)["1"].zhikrs[name]) {
       return res.status(401).json({
         message: "Invalid zhikr name",
       });
@@ -93,20 +114,21 @@ const updatePlan = async (req, res) => {
 
     const number = Number(amount);
 
-    
-    const year = `${new Date().getFullYear()}`;
-    
     const dates = Array.from({ length: 30 }, (_, i) => `${i + 1}`);
     const limit = !number ? 1 : number < 1 ? 1 : number;
-    
+
     dates.forEach((date) => {
-      req.user.ibada[year][date].zhikrs[name].limit = limit;
+      req.user.ibada.get(year)[date].zhikrs[name].limit = limit;
+      req.user.markModified(`ibada.${year}.${date}.zhikrs.${name}.limit`);
     });
-    
+
     await req.user.save();
-    req.status(204).json({
+    res.status(200).json({
       message: "Success",
-      data: req.user.ibada[year][todayHijri()].zhikrs[name].limit,
+      data: {
+        name,
+        limit: req.user.ibada.get(year)[todayHijri()].zhikrs[name].limit,
+      },
     });
   } catch (error) {
     console.log("Error on the update quran controller", error);
