@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+  --breakpoint-xs: 24rem;
+  --animate-progress: prog 1s ease-in-out;
+
+  @keyframes prog {
+    from {
+      width: 0%;
+    }
+  }
+}

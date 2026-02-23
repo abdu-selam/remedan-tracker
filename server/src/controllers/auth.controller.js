@@ -54,7 +54,10 @@ const signup = async (req, res) => {
 
     res.status(201).json({
       message: "User created",
-      name,
+      user: {
+        name,
+        email
+      },
     });
   } catch (error) {
     console.log("error on sign up controller", error);
@@ -327,14 +330,14 @@ const refreshTokenFunc = async (req, res) => {
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
-    return res.status(400).json({
+    return res.status(401).json({
       message: "token missed",
     });
   }
 
   try {
     if (refreshToken.exp < Date.now()) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: "token expired",
       });
     }
@@ -374,7 +377,7 @@ const refreshTokenFunc = async (req, res) => {
 
     await user.save();
     res.status(200).json({
-      message: "success",
+      message: "Success",
       user: {
         name: user.name,
         email: user.email,
@@ -392,7 +395,7 @@ const me = async (req, res) => {
   const { refreshToken, accessToken } = req.cookies;
 
   if (!accessToken) {
-    return res.status(400).json({
+    return res.status(401).json({
       message: "token missed",
     });
   }
@@ -401,13 +404,13 @@ const me = async (req, res) => {
     let user;
     if (accessToken.exp < Date.now()) {
       if (!refreshToken) {
-        return res.status(400).json({
+        return res.status(401).json({
           message: "token missed",
         });
       }
 
       if (refreshToken.exp < Date.now()) {
-        return res.status(400).json({
+        return res.status(401).json({
           message: "token expired",
         });
       }
@@ -452,7 +455,7 @@ const me = async (req, res) => {
     }
 
     res.status(200).json({
-      message: "success",
+      message: "Success",
       user: {
         name: user.name,
         email: user.email,
