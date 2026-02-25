@@ -441,7 +441,7 @@ const me = async (req, res) => {
 
       res.cookie("refreshToken", refresh_Token, {
         httpOnly: true,
-        secure: ENV.NODE_ENV === "production",
+        secure: ENV.NODE_ENV === "production",               
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
