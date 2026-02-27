@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import api from "../config/api.config";
 import useStore from "../store/useStore";
 import { useNavigate } from "react-router-dom";
+import Alert from "./Alert";
 
 const Validate = () => {
   const tokenRef = useRef();
-  const [resend, setResend] = useState("0:59");
+  const [resend, setResend] = useState("Resend");
   const [canSend, setCansend] = useState(false);
   const email = useStore((state) => state.user.email);
   const setName = useStore((state) => state.setName);
@@ -13,19 +14,25 @@ const Validate = () => {
   const navigate = useNavigate();
   const log = useStore((state) => state.user.log);
   const setLog = useStore((state) => state.setLog);
+  const [alert, setAlert] = useState(false);
+  const [type, setType] = useState(false);
+  const [msg, setMsg] = useState("");
+  const error = useStore((state) => state.user.alert);
+  const setError = useStore((state) => state.setAlert);
+  let timeout = null;
 
   const counter = () => {
     let num = 59;
 
-    const timer = setInterval(() => {
-      if (num == 0) {
-        setResend("Resend");
-        clearInterval(timer);
-      } else {
-        num--;
-        setResend(num > 9 ? `0:${num}` : `0:0${num}`);
-      }
-    }, 1000);
+    // const timer = setInterval(() => {
+    //   if (num == 0) {
+    //     setResend("Resend");
+    //     clearInterval(timer);
+    //   } else {
+    //     num--;
+    //     setResend(num > 9 ? `0:${num}` : `0:0${num}`);
+    //   }
+    // }, 1000);
   };
 
   const resendController = async () => {
@@ -33,12 +40,15 @@ const Validate = () => {
       return;
     }
 
-    setCansend(!canSend);
-
+    
     try {
       const res = await api.post("/auth/resend", { email });
+      setError(false);
     } catch (error) {
       console.log(error.response.data);
+      setError(true);
+    } finally {
+      setCansend(!canSend);
     }
   };
 
@@ -46,6 +56,25 @@ const Validate = () => {
     if (log) {
       navigate("/", { replace: true });
     }
+    const message = !error
+      ? "Email Sent Successfully. If you don't get the email check your spam"
+      : "Sorry today's limit reached. Try tomorow";
+    if (msg == message) {
+      return;
+    }
+
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    setAlert(true);
+    setMsg(message);
+    setType(!error);
+    timeout = setTimeout(() => {
+      setAlert(false);
+      setMsg("");
+      timeout = null;
+    }, 5000);
+
     counter();
   }, [canSend]);
 
@@ -117,6 +146,7 @@ const Validate = () => {
 
   return (
     <div className="h-screen grid place-content-center">
+      <Alert msg={msg} type={type} on={alert} />
       <div className="flex flex-col gap-4 items-center">
         <form
           onSubmit={nextInput}
@@ -128,7 +158,7 @@ const Validate = () => {
               onInput={nextInput}
               onKeyDown={backFunc}
               className={`border border-black/50 text-xl p-2 w-8 h-12 rounded-lg focus:outline-none`}
-              type="number"
+              type="text"
               readOnly={i != 0}
               max={1}
               key={i}

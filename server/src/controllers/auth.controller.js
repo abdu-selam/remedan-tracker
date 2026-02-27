@@ -1,9 +1,19 @@
 const { emailValidator } = require("../utils/validate");
 const User = require("../models/User");
 const bcryptjs = require("bcrypt");
-const { genOTP, genAccess, genRefresh, verifyAccess } = require("../utils/token");
+const {
+  genOTP,
+  genAccess,
+  genRefresh,
+  verifyAccess,
+} = require("../utils/token");
 const sendEmail = require("../utils/email");
 const ENV = require("../utils/env");
+const {
+  totalProgress,
+  totalTodayProgress,
+} = require("../services/user.service");
+const { todayHijri } = require("../utils/hijriDate");
 
 const signup = async (req, res) => {
   const { name, email, password } = req.body;
@@ -56,7 +66,7 @@ const signup = async (req, res) => {
       message: "User created",
       user: {
         name,
-        email
+        email,
       },
     });
   } catch (error) {
@@ -95,7 +105,7 @@ const verifyEmail = async (req, res) => {
       email: user.email,
     };
 
-    const accessToken = genAccess(payload); 
+    const accessToken = genAccess(payload);
     const refreshToken = genRefresh(payload);
 
     res.cookie("accessToken", accessToken, {
@@ -244,7 +254,7 @@ const resendVerify = async (req, res) => {
       "verify-email",
     );
 
-    res.status(200).json({
+    res.status(201).json({
       message: "Email sent",
     });
   } catch (error) {
@@ -260,7 +270,7 @@ const forgotPassword = async (req, res) => {
   try {
     req.user.forgotPassword = {
       code,
-      created: Date.now()
+      created: Date.now(),
     };
 
     await req.user.save();
@@ -441,7 +451,7 @@ const me = async (req, res) => {
 
       res.cookie("refreshToken", refresh_Token, {
         httpOnly: true,
-        secure: ENV.NODE_ENV === "production",               
+        secure: ENV.NODE_ENV === "production",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -454,11 +464,18 @@ const me = async (req, res) => {
       user = await User.findOne({ email });
     }
 
+    const year = `${new Date().getFullYear()}`.trim();
+
     res.status(200).json({
       message: "Success",
       user: {
         name: user.name,
         email: user.email,
+        progress: {
+          today: totalTodayProgress(user.ibada.get(year), todayHijri()),
+          total: totalProgress(user, year),
+        },
+        today: todayHijri()
       },
     });
   } catch (error) {

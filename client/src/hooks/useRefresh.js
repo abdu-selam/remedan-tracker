@@ -1,19 +1,30 @@
 import api from "../config/api.config";
 
-const useRefresh = async (func) => {
+const useRefresh = async (path, method = null, data = null) => {
   try {
-    const res = await func();
-    return res.data
+    if (method == "get") {
+      const res = await api.get(path);
+      return res.data;
+    } else if (method == "post") {
+      const res = await api.post(path, data);
+      return res.data;
+    } else if (method == "put") {
+      const res = await api.put(path, data);
+      return res.data;
+    }
+    const res = await api.delete(path);
+    return res.data;
   } catch (error) {
-    if (error.response.status == 401) {
+    console.log(error);
+    if (error.response.data.message == "token missed") {
       try {
         await api.get("/auth/refresh");
-        useRefresh(func);
+        useRefresh(path, method, data);
       } catch (error) {
-        return null;
+        throw new Error(error.response.data.message);
       }
     } else {
-        return null
+      throw new Error(error.response.data.message);
     }
   }
 };

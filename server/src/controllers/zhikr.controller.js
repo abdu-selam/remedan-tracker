@@ -1,6 +1,8 @@
 const {
   zhikrScheduler,
   singleTypeProgress,
+  totalProgress,
+  totalTodayProgress,
 } = require("../services/user.service");
 const { todayHijri } = require("../utils/hijriDate");
 
@@ -30,16 +32,24 @@ const getData = async (req, res) => {
 const tick = async (req, res) => {
   try {
     const { amount, name, date, year } = req.body;
-    if (!amount || !name) {
+    if (!name) {
       return res.status(401).json({
-        message: "amount and name required",
+        message: "name required",
       });
     }
 
+    const isSpecial = ["night", "morning", "sleep"].includes(name);
+
     if (
-      !req.user.ibada.get(year)[date].zhikrs[name] &&
-      !["night", "morning", "sleep"].includes(name)
+      (isSpecial && ![false, true].includes(amount)) ||
+      (!isSpecial && !amount)
     ) {
+      return res.status(401).json({
+        message: "amount required",
+      });
+    }
+
+    if (!req.user.ibada.get(year)[date].zhikrs[name] && !isSpecial) {
       return res.status(401).json({
         message: "Invalid zhikr name",
       });
@@ -51,9 +61,11 @@ const tick = async (req, res) => {
         message: "Invalid time",
       });
     }
-    const data = {};
+    const data = {
+      remedan: date,
+    };
 
-    if (!["night", "morning", "sleep"].includes(name)) {
+    if (!isSpecial) {
       const amountNeed =
         amount > 0
           ? amount
@@ -66,6 +78,8 @@ const tick = async (req, res) => {
       data.progress =
         req.user.ibada.get(year)[date].zhikrs[name].amount /
         req.user.ibada.get(year)[date].zhikrs[name].limit;
+      data.description =
+        req.user.ibada.get(year)[date].zhikrs[name].description;
     } else {
       const amountNeed = [false, true].includes(amount)
         ? amount
@@ -75,17 +89,26 @@ const tick = async (req, res) => {
       req.user.markModified(
         `ibada.${year}.${date}.zhikrs.special.${name}.done`,
       );
-      data.amount = req.user.ibada.get(year)[date].zhikrs.special[name].done;
+      data.amount = req.user.ibada.get(year)[date].zhikrs.special[name].done
+        ? 1
+        : 0;
       data.limit = 1;
       data.progress = Number(
         req.user.ibada.get(year)[date].zhikrs.special[name].done,
       );
+      data.description =
+        req.user.ibada.get(year)[date].zhikrs.special[name].description;
     }
 
     await req.user.save();
     res.status(200).json({
       message: "Success",
       data,
+      progress: {
+        today: totalTodayProgress(req.user.ibada.get(year), todayHijri()),
+        total: totalProgress(req.user, year),
+        zhikr: singleTypeProgress("zhikrs", req.user, year),
+      },
     });
   } catch (error) {
     console.log("Error on the tick zhikr coltroller", error);

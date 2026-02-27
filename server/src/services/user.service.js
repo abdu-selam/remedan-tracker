@@ -49,7 +49,7 @@ const totalProgress = (user, year) => {
 
 const totalTodayProgress = (userData, date) => {
   const data = {};
-  data[date] = { ...userData[date] };
+  data[date] = { ...userData[`${date}`] };
   const [zhikrAmount, zhikrLimit] = zhikrAmountExtractor(data);
   const [khitamAmount, khitamLimit] = [
     data[date].quran.amount,
@@ -69,6 +69,7 @@ const singleTypeProgress = (type, user, year) => {
     const [amount, limit] = zhikrAmountExtractor(data);
     return amount / limit;
   }
+  if (type == "khitam") return data[type].page;
   return data[type].amount / data[type].limit;
 };
 
@@ -101,31 +102,50 @@ const zhikrScheduler = (data) => {
   const days = Array.from({ length: 30 }, (_, i) => `${i + 1}`);
   const result = [];
 
-  const zhikrSample = data[days[0]].zhikrs;
-
   days.forEach((day) => {
-    const date = data[day];
+    const date = { ...data[day] };
 
     const zhikrData = date.zhikrs;
     for (const key in zhikrData) {
       const zhikr = zhikrData[key];
       let progress = 0;
       if (key == "special") {
-        progress +=
-          (zhikr.night.done + zhikr.morning.done + zhikr.sleep.done) / 3;
-      } else {
-        progress += zhikr.amount / zhikr.limit;
-      }
+        const night = zhikrData.special.night;
+        const morning = zhikrData.special.morning;
+        const sleep = zhikrData.special.sleep;
 
-      zhikrData[key].progress = progress;
+        zhikrData.night = {
+          description: night.description,
+          limit: 1,
+          amount: night.done ? 1 : 0,
+          progress: night.done ? 1 : 0,
+        };
+
+        zhikrData.morning = {
+          description: morning.description,
+          limit: 1,
+          amount: morning.done ? 1 : 0,
+          progress: morning.done ? 1 : 0,
+        };
+
+        zhikrData.sleep = {
+          description: sleep.description,
+          limit: 1,
+          amount: sleep.done ? 1 : 0,
+          progress: sleep.done ? 1 : 0,
+        };
+
+        delete zhikrData.special;
+      } else {
+        let progress = zhikr.amount / zhikr.limit;
+        zhikrData[key].progress = progress;
+      }
     }
 
-    const obj = {
+    result.push({
       remedan: day,
       zhikr: zhikrData,
-    };
-
-    result.push(obj);
+    });
   });
 
   return result;
@@ -148,6 +168,20 @@ const terawihScheduler = (data) => {
   return result;
 };
 
+const pageCounter = (data, amount, newAmount) => {
+  let page = 0;
+  const days = Array.from({ length: 30 }, (_, i) => `${i}`);
+  for (const key in data) {
+    if (days.includes(key)) {
+      page += data[key].quran.amount;
+    }
+  }
+
+  page -= amount;
+  page += newAmount;
+  return page;
+};
+
 module.exports = {
   khitamCalculator,
   singleTypeProgress,
@@ -156,4 +190,5 @@ module.exports = {
   totalTodayProgress,
   terawihScheduler,
   zhikrScheduler,
+  pageCounter,
 };

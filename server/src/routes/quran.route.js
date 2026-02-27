@@ -14,6 +14,7 @@ route.use(protected);
 route.get("/", getData);
 
 route.put("/tick", tick);
+
 route.put("/plan", updatePlan);
 
 module.exports = route;

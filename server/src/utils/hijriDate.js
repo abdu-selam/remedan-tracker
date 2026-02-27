@@ -1,4 +1,4 @@
-const { default: HijriDate, toHijri } = require("hijri-date/lib/safe");
+const { toHijri } = require("hijri-date/lib/safe");
 
 const todayHijri = () => {
   const now = new Date();

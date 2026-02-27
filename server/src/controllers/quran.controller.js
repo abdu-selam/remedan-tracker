@@ -1,6 +1,9 @@
 const {
   quranScheduler,
   singleTypeProgress,
+  totalProgress,
+  totalTodayProgress,
+  pageCounter,
 } = require("../services/user.service");
 const { khitamValidator } = require("../utils/validate");
 const { todayHijri } = require("../utils/hijriDate");
@@ -49,9 +52,11 @@ const tick = async (req, res) => {
     const amountNeed =
       amount > 0 ? Math.floor(amount) : userObj.ibada[year][date].quran.amount;
 
-    userObj.ibada.get(year).khitam.page += amountNeed;
-    userObj.ibada.get(year).khitam.page -=
-      userObj.ibada.get(year)[date].quran.amount;
+    userObj.ibada.get(year).khitam.page = pageCounter(
+      userObj.ibada.get(year),
+      userObj.ibada.get(year)[date].quran.amount,
+      amountNeed,
+    );
 
     const pages = userObj.ibada.get(year).khitam.page;
     const khitam = pages / 604;
@@ -60,6 +65,7 @@ const tick = async (req, res) => {
     userObj.ibada.get(year).khitam.amount = khitam;
 
     const data = {
+      remedan: date,
       amount: userObj.ibada.get(year)[date].quran.amount,
       limit: userObj.ibada.get(year)[date].quran.limit,
       progress:
@@ -73,6 +79,11 @@ const tick = async (req, res) => {
     res.status(200).json({
       message: "Success",
       data,
+      progress: {
+        today: totalTodayProgress(userObj.ibada.get(year), todayHijri()),
+        total: totalProgress(userObj, year),
+        quran: singleTypeProgress("khitam", userObj, year),
+      },
     });
   } catch (error) {
     console.log("Error on the tick quran coltroller", error);

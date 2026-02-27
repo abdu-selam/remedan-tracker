@@ -8,7 +8,7 @@ const protected = async (req, res, next) => {
 
     if (!token) {
       return res.status(401).json({
-        message: "Token missed",
+        message: "token missed",
       });
     }
 
@@ -106,7 +106,6 @@ const forgotProtector = async (req, res, next) => {
     }
 
     const { created } = user.forgotPassword;
-    console.log(created)
 
     if (created) {
       const threeDay = 1000 * 60 * 60 * 72;

@@ -1,6 +1,8 @@
 const {
   terawihScheduler,
   singleTypeProgress,
+  totalProgress,
+  totalTodayProgress,
 } = require("../services/user.service");
 const { todayHijri } = require("../utils/hijriDate");
 const { terawihValidator } = require("../utils/validate");
@@ -60,7 +62,15 @@ const tick = async (req, res) => {
 
     res.status(200).json({
       message: "Success",
-      data: req.user.ibada.get(year)[date].terawih,
+      data: {
+        remedan: date,
+        done: req.user.ibada.get(year)[date].terawih,
+      },
+      progress: {
+        today: totalTodayProgress(req.user.ibada.get(year), todayHijri()),
+        total: totalProgress(req.user, year),
+        terawih: singleTypeProgress("terawih", req.user, year),
+      },
     });
   } catch (error) {
     console.log("Error on the tick terawih coltroller", error);
