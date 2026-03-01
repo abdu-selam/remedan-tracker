@@ -93,7 +93,7 @@ const ZhikrCalndar = ({ curr }) => {
         name: curr,
       });
 
-      store.setSingleDayZhikr(res.data);
+      store.setSingleDayZhikr(res.data, curr);
       store.setTodayProgress(res.progress.today);
       store.setTotalProgress(res.progress.total);
       store.setZhikrProgress(res.progress.zhikr);

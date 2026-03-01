@@ -166,6 +166,10 @@ const Dashboard = () => {
           setLoad(false);
           return;
         }
+        if (zhikr.data[today - 1] && current == "zhikr") {
+          setLoad(false);
+          return;
+        }
         setLoad(true);
 
         const res = await useRefresh(`/${current}`, "get");
