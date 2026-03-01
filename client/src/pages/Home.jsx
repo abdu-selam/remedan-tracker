@@ -26,11 +26,11 @@ const Home = () => {
     },
   ];
 
-  const location = useLocation()
+  const location = useLocation();
 
-  useEffect(()=>{
-    location.pathname = '/'
-  },[])
+  useEffect(() => {
+    location.pathname = "/";
+  }, []);
 
   return (
     <>
@@ -61,12 +61,12 @@ const Home = () => {
               </p>
 
               <div className="flex gap-2 justify-center mt-4">
-                <Button>
-                  <Link to={"/auth"}>Get Started</Link>
-                </Button>
-                <Button type={"log"}>
-                  <Link to={"/auth?type=log"}>Log In</Link>
-                </Button>
+                <Link to={"/auth"}>
+                  <Button>Get Started</Button>
+                </Link>
+                <Link to={"/auth?type=log"}>
+                  <Button type={"log"}>Log In</Button>
+                </Link>
               </div>
 
               <ul className=" mx-auto w-max flex flex-col items-center gap-2 py-2 border-x-3 rounded-xl px-3.5 font-bold my-8">
@@ -126,14 +126,14 @@ const Home = () => {
                 className="flex flex-col items-center rounded-xl p-2 max-w-60 gap-2 animate-days-2 opacity-0"
               >
                 <span>{fea.icon()}</span>
-                <h3 className="text-sm font-bold ">{fea.name}</h3>
+                <h2 className="text-sm font-bold ">{fea.name}</h2>
                 <p className="text-sm text-center">{fea.description}</p>
               </li>
             ))}
           </ul>
         </section>
       </div>
-      <footer className="bg-second/5 text-second/50 flex flex-col justify-center items-center p-10 text-sm gap-4">
+      <footer className="bg-second/5 text-second/90 flex flex-col justify-center items-center p-10 text-sm gap-4">
         <p className="font-bold">Abidin Ramadan Tracker</p>
         <hr className="border border-second/30 w-full" />
         <p className="text-center text-xs">
@@ -142,7 +142,7 @@ const Home = () => {
         </p>
 
         <p className="text-center">Stay disciplined. Stay intentional.</p>
-        <p className="text-center opacity-70">
+        <p className="text-center">
           &copy; {new Date().getFullYear()} Abidin Ramadan Tracker. All rights
           reserved.
         </p>
