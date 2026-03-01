@@ -208,7 +208,7 @@ const Auth = () => {
         } else {
           const message =
             error.status == 409
-              ? "User exists please try to log in"
+              ? "Your email or password is incorrect please try again"
               : error.status == 429
                 ? "Please try again after 15 minutes you reached your 15 minutes request limit"
                 : "Please Fill Valid Email Address";

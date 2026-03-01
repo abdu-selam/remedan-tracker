@@ -1,14 +1,11 @@
-const nodemailer = require("nodemailer");
+const SibApiV3Sdk = require("sib-api-v3-sdk");
+
 const ENV = require("../utils/env");
 
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: ENV.SMTP_USER,
-    pass: ENV.SMTP_KEY,
-  },
-});
+const client = SibApiV3Sdk.ApiClient.instance;
+
+client.authentications["api-key"].apiKey = ENV.EMAIL_KEY;
+
+const transporter = new SibApiV3Sdk.TransactionalEmailsApi();
 
 module.exports = transporter;

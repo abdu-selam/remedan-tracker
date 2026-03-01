@@ -11,6 +11,7 @@ const ENV = {
   SMTP_USER: process.env.SMTP_USER,
   SMTP_KEY: process.env.SMTP_KEY,
   CLIENT_URL: process.env.CLIENT_URL,
+  EMAIL_KEY: process.env.EMAIL_KEY,
 };
 
 module.exports = ENV;
