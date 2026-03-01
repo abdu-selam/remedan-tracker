@@ -6,7 +6,7 @@ import Alert from "./Alert";
 
 const Validate = () => {
   const tokenRef = useRef();
-  const [resend, setResend] = useState("Resend");
+  const [resend, setResend] = useState("0:59");
   const [canSend, setCansend] = useState(false);
   const email = useStore((state) => state.user.email);
   const setName = useStore((state) => state.setName);
@@ -24,15 +24,15 @@ const Validate = () => {
   const counter = () => {
     let num = 59;
 
-    // const timer = setInterval(() => {
-    //   if (num == 0) {
-    //     setResend("Resend");
-    //     clearInterval(timer);
-    //   } else {
-    //     num--;
-    //     setResend(num > 9 ? `0:${num}` : `0:0${num}`);
-    //   }
-    // }, 1000);
+    const timer = setInterval(() => {
+      if (num == 0) {
+        setResend("Resend");
+        clearInterval(timer);
+      } else {
+        num--;
+        setResend(num > 9 ? `0:${num}` : `0:0${num}`);
+      }
+    }, 1000);
   };
 
   const resendController = async () => {
@@ -40,17 +40,22 @@ const Validate = () => {
       return;
     }
 
-    
     try {
       const res = await api.post("/auth/resend", { email });
       setError(false);
     } catch (error) {
-      console.log(error.response.data);
+      navigate("/", { replace: true });
       setError(true);
     } finally {
       setCansend(!canSend);
     }
   };
+
+  useEffect(() => {
+    if (!email) {
+      navigate("/", { replace: true });
+    }
+  }, []);
 
   useEffect(() => {
     if (log) {
@@ -98,8 +103,38 @@ const Validate = () => {
       setLog(true);
       navigate("/", { replace: true });
     } catch (error) {
-      if (error.response.status == 400) {
-        console.log(error.response.data);
+      if (error.response.data.message == "Invalid Token") {
+        const message = "Please check the code and fill correctly!";
+        if (msg == message) {
+          return;
+        }
+
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        setAlert(true);
+        setMsg(message);
+        timeout = setTimeout(() => {
+          setAlert(false);
+          setMsg("");
+          timeout = null;
+        }, 5000);
+      } else if (error.response.data.message == "Expired Token") {
+        const message = "Token has been expired please click resend for new token!";
+        if (msg == message) {
+          return;
+        }
+
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        setAlert(true);
+        setMsg(message);
+        timeout = setTimeout(() => {
+          setAlert(false);
+          setMsg("");
+          timeout = null;
+        }, 5000);
       }
     }
   };
@@ -147,7 +182,7 @@ const Validate = () => {
   return (
     <div className="h-screen grid place-content-center">
       <Alert msg={msg} type={type} on={alert} />
-      <div className="flex flex-col gap-4 items-center">
+      <div className="flex flex-col gap-4 items-center animate-auth">
         <form
           onSubmit={nextInput}
           ref={tokenRef}
@@ -157,20 +192,21 @@ const Validate = () => {
             <input
               onInput={nextInput}
               onKeyDown={backFunc}
-              className={`border border-black/50 text-xl p-2 w-8 h-12 rounded-lg focus:outline-none`}
+              className={`border border-second/50 text-xl p-2 w-8 h-12 rounded-lg focus:outline-none animate-opp`}
               type="text"
               readOnly={i != 0}
               max={1}
               key={i}
               name={`token-${i}`}
+              autoComplete="off"
             />
           ))}
         </form>
-        <p className="text-sm flex gap-1">
+        <p className="text-sm flex gap-1 animate-down">
           Dosen't Recieve Verification code?
           <span
             onClick={resendController}
-            className={`${resend.toLowerCase() == "resend" ? "text-green-400" : "text-black/70"} `}
+            className={`${resend.toLowerCase() == "resend" ? "text-confirm" : "text-second/70"} `}
           >
             {resend}
           </span>

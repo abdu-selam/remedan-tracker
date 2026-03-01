@@ -1,8 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { Eye, EyeClosed } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Eye,
+  EyeClosed,
+  Mail,
+  UserCircle,
+  LockIcon,
+  Loader,
+} from "lucide-react";
 import Button from "../components/Button";
-import logo from "../assets/logo.jpg";
+import logo from "../assets/logo.png";
 import api from "../config/api.config";
 import useStore from "../store/useStore";
 import Alert from "../components/Alert";
@@ -17,6 +24,7 @@ const Auth = () => {
   const setName = useStore((state) => state.setName);
   const setEmail = useStore((state) => state.setEmail);
   const [alert, setAlert] = useState(false);
+  const [submiting, setSubmiting] = useState(false);
   const [type, setType] = useState(false);
   const [msg, setMsg] = useState("");
   const setError = useStore((state) => state.setAlert);
@@ -26,6 +34,8 @@ const Auth = () => {
 
   const loginRef = useRef();
   const signupRef = useRef();
+
+  const wrapperRef = useRef();
 
   const forgotController = async () => {
     const form = loginRef.current;
@@ -76,12 +86,32 @@ const Auth = () => {
       setError(false);
       navigate("/reset");
     } catch (error) {
-      console.log(error);
+      const message =
+        error.status == 409
+          ? "User does not exists please try to register"
+          : error.status == 429
+            ? "Please try again after 15 minutes you reached your 15 minutes request limit"
+            : "Please Fill Valid Email Address";
+      if (msg == message) {
+        return;
+      }
+
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      setAlert(true);
+      setMsg(message);
+      timeout = setTimeout(() => {
+        setAlert(false);
+        setMsg("");
+        timeout = null;
+      }, 5000);
       setError(true);
     }
   };
 
   const submitter = async (e) => {
+    setSubmiting(true);
     e.preventDefault();
     if (loginRef.current == e.target) {
       const form = loginRef.current;
@@ -105,6 +135,7 @@ const Auth = () => {
           setMsg("");
           timeout = null;
         }, 5000);
+        setSubmiting(false);
         return;
       }
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -124,6 +155,7 @@ const Auth = () => {
           setMsg("");
           timeout = null;
         }, 5000);
+        setSubmiting(false);
         return;
       }
       try {
@@ -134,7 +166,7 @@ const Auth = () => {
         setName(res.data.user.name);
         setEmail(res.data.user.email);
         setLog(true);
-        navigate("/", { replace: true });
+        navigate(0);
       } catch (error) {
         if (error.response.status == 401) {
           try {
@@ -143,7 +175,7 @@ const Auth = () => {
 
             setError(false);
             if (res.status == 201) {
-              navigate("/validate", { replace: true });
+              navigate(0);
             }
           } catch (error) {
             const status = error.response?.status;
@@ -170,28 +202,31 @@ const Auth = () => {
               setMsg("");
               timeout = null;
             }, 5000);
+            setSubmiting(false);
             setError(true);
           }
         } else {
-          const status = error.response?.status;
-          if (status == 409) {
-            const message = "Your Email or Password is incorrect";
-            if (msg == message) {
-              return;
-            }
-
-            if (timeout) {
-              clearTimeout(timeout);
-            }
-            setType(false);
-            setAlert(true);
-            setMsg(message);
-            timeout = setTimeout(() => {
-              setAlert(false);
-              setMsg("");
-              timeout = null;
-            }, 5000);
+          const message =
+            error.status == 409
+              ? "User exists please try to log in"
+              : error.status == 429
+                ? "Please try again after 15 minutes you reached your 15 minutes request limit"
+                : "Please Fill Valid Email Address";
+          if (msg == message) {
+            return;
           }
+
+          if (timeout) {
+            clearTimeout(timeout);
+          }
+          setAlert(true);
+          setMsg(message);
+          timeout = setTimeout(() => {
+            setAlert(false);
+            setMsg("");
+            timeout = null;
+          }, 5000);
+          setSubmiting(false);
         }
       }
       return;
@@ -218,6 +253,7 @@ const Auth = () => {
         setMsg("");
         timeout = null;
       }, 5000);
+      setSubmiting(false);
       return;
     }
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -237,6 +273,7 @@ const Auth = () => {
         setMsg("");
         timeout = null;
       }, 5000);
+      setSubmiting(false);
       return;
     }
 
@@ -251,8 +288,28 @@ const Auth = () => {
       setError(false);
       navigate("/validate", { replace: true });
     } catch (error) {
-      console.log(error);
+      const message =
+        error.status == 409
+          ? "User exists please try to log in"
+          : error.status == 429
+            ? "Please try again after 15 minutes you reached your 15 minutes request limit"
+            : "Please Fill Valid Email Address";
+      if (msg == message) {
+        return;
+      }
+
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      setAlert(true);
+      setMsg(message);
+      timeout = setTimeout(() => {
+        setAlert(false);
+        setMsg("");
+        timeout = null;
+      }, 5000);
       setError(true);
+      setSubmiting(false);
     }
   };
 
@@ -276,12 +333,28 @@ const Auth = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const elem = wrapperRef.current;
+    elem.style.display = "none";
+    setTimeout(() => {
+      elem.style.display = "block";
+    }, 100);
+  }, [login]);
+
   return (
-    <div className="w-screen h-screen grid place-content-center bg-amber-50">
+    <div className="w-screen h-screen grid place-content-center text-second bg-primary">
       <Alert msg={msg} type={type} on={alert} />
-      <div className="shadow-2xl border border-black/20 w-70 text-[0.8rem] p-2 rounded-xl bg-white">
-        <figure className="flex flex-col items-center p-4">
-          <img src={logo} alt="" width={100} className="w-8 rounded-full " />
+      <div
+        ref={wrapperRef}
+        className="border border-second/80 shadow-[0_0_1rem_var(--color-accent)] w-70 text-[0.8rem] p-2 rounded-xl bg-second/10 animate-auth transition"
+      >
+        <figure className="flex flex-col items-center gap-2 p-4">
+          <img
+            src={logo}
+            alt=""
+            width={100}
+            className="w-8 rounded-full shadow-[0_0_0.4rem_var(--color-accent)]"
+          />
           <figcaption className="text-[0.8rem] flex flex-col items-center">
             <h1 className="font-bold">Abidin</h1>
             <p className="text-[0.6rem]">Track your progress in remedan</p>
@@ -292,29 +365,39 @@ const Auth = () => {
           <form
             onSubmit={submitter}
             ref={loginRef}
-            className="flex flex-col gap-2"
+            className="flex flex-col gap-2 animate-auth"
           >
             <div className="flex flex-col gap-1">
-              <label htmlFor="email" className="font-bold">
-                Email
+              <label
+                htmlFor="email"
+                className="font-bold flex gap-1 items-center"
+              >
+                <Mail className="w-5" />
+                <span>Email</span>
               </label>
               <input
                 type="text"
                 name="email"
+                autoComplete="off"
                 id="email"
-                className="border px-2 py-1 rounded-lg border-black/50 focus:outline-none focus:border-black"
+                className="border px-2 py-1 rounded-lg border-second/50 focus:outline-none focus:border-second"
                 placeholder="Type Your Email"
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label htmlFor="password" className="font-bold">
-                Password
+              <label
+                htmlFor="password"
+                className="font-bold flex items-center gap-1"
+              >
+                <LockIcon className="w-5" />
+                <span>Password</span>
               </label>
-              <div className="group border relative rounded-lg border-black/50 focus:outline-none focus-within:border-black w-full">
+              <div className="group border relative rounded-lg border-second/50 focus:outline-none focus-within:border-second w-full">
                 <input
                   type={eye ? "password" : "text"}
                   name="password"
                   id="password"
+                  autoComplete="off"
                   className=" px-2 py-1 rounded-lg focus:outline-none  w-[calc(100%-1.4rem)]"
                   placeholder="Type Your Password"
                 />
@@ -332,24 +415,29 @@ const Auth = () => {
               <p
                 ref={forgotRef}
                 onClick={forgotController}
-                className="text-[0.7rem] text-black/80 text-end pr-4"
+                className="text-[0.7rem]  text-end pr-4"
               >
                 forgot password ?
               </p>
             </div>
 
-            <Button submit={true}>
-              <div ref={btnRef}>Login</div>
+            <Button submit={!submiting}>
+              {!submiting ? (
+                <div ref={btnRef}>Login</div>
+              ) : (
+                <div className="flex items-center justify-center">
+                  <Loader className="animate-spin" />
+                </div>
+              )}
             </Button>
-            <p className="text-[0.7rem] text-black/70 text-center">
+            <p className="text-[0.7rem] text-second/70 flex justify-center items-center">
               Don't have an account ?
               <span
                 onClick={() => {
                   setLogin(false);
                 }}
-                className="text-black"
+                className="text-second font-bold hover:text-shadow-[0_0_0.1rem_var(--color-second)] hover:scale-105 block p-1 transition duration-500"
               >
-                {" "}
                 Register
               </span>
             </p>
@@ -358,41 +446,56 @@ const Auth = () => {
           <form
             onSubmit={submitter}
             ref={signupRef}
-            className="flex flex-col gap-2"
+            className="flex flex-col gap-2 animate-auth"
           >
             <div className="flex flex-col gap-1">
-              <label htmlFor="name" className="font-bold">
-                Name
+              <label
+                htmlFor="name"
+                className="font-bold flex items-center gap-1"
+              >
+                <UserCircle className="w-5" />
+                <span>Name</span>
               </label>
               <input
                 type="text"
                 name="name"
                 id="name"
-                className="border px-2 py-1 rounded-lg border-black/50 focus:outline-none focus:border-black"
+                autoComplete="off"
+                className="border px-2 py-1 rounded-lg border-second/50 focus:outline-none focus:border-second"
                 placeholder="Type Your Full Name"
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label htmlFor="email" className="font-bold">
-                Email
+              <label
+                htmlFor="email"
+                className="font-bold flex items-center gap-1"
+              >
+                <Mail className="w-5" />
+                <span>Email</span>
               </label>
               <input
                 type="email"
                 name="email"
                 id="email"
-                className="border px-2 py-1 rounded-lg border-black/50 focus:outline-none focus:border-black"
+                autoComplete="off"
+                className="border px-2 py-1 rounded-lg border-second/50 focus:outline-none focus:border-second"
                 placeholder="Type Your Email"
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label htmlFor="password" className="font-bold">
-                Password
+              <label
+                htmlFor="password"
+                className="font-bold flex items-center gap-1"
+              >
+                <LockIcon className="w-5" />
+                <span>Password</span>
               </label>
-              <div className="group border relative rounded-lg border-black/50 focus:outline-none focus-within:border-black w-full">
+              <div className="group border relative rounded-lg border-second/50 focus:outline-none focus-within:border-second w-full">
                 <input
                   type={eye ? "password" : "text"}
                   name="password"
                   id="password"
+                  autoComplete="off"
                   className=" px-2 py-1 rounded-lg focus:outline-none  w-[calc(100%-1.4rem)]"
                   placeholder="Type Password"
                 />
@@ -409,18 +512,23 @@ const Auth = () => {
               </div>
             </div>
 
-            <Button submit={true}>
-              <div>Register</div>
+            <Button submit={!submiting}>
+              {!submiting ? (
+                <div>Register</div>
+              ) : (
+                <div className="flex items-center justify-center">
+                  <Loader className="animate-spin" />
+                </div>
+              )}
             </Button>
-            <p className="text-[0.7rem] text-black/70 text-center">
+            <p className="text-[0.7rem] flex items-center justify-center text-second/70">
               Already registered ?
               <span
                 onClick={() => {
                   setLogin(true);
                 }}
-                className="text-black"
+                className="text-second font-bold hover:text-shadow-[0_0_0.1rem_var(--color-second)] hover:scale-105 block p-1 transition duration-500"
               >
-                {" "}
                 log in
               </span>
             </p>

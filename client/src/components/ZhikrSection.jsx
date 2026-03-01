@@ -1,11 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ZhikrCalndar from "./ZhikrCalndar";
 import Loading from "./Loading";
+import { MenuIcon, X } from "lucide-react";
+import useStore from "../store/useStore";
 
-const ZhikrSection = ({ data }) => {
+const ZhikrSection = () => {
   const [zhikrs, setZhikrs] = useState([]);
   const [active, setActive] = useState("");
   const [load, setLoad] = useState(true);
+  const [menu, setMenu] = useState(false);
+  const data = useStore((state) => state.user.ibada.zhikr.data);
+  const today = useStore((state) => state.user.today);
+  const wrapper = useRef();
+  const zhikrRef = useRef([]);
+  const menuRef = useRef();
+
+  document.body.addEventListener("click", (e) => {
+    const navs = [...zhikrRef.current, wrapper.current, menuRef.current];
+
+    if (navs.includes(e.target)) return;
+    setMenu(false);
+  });
 
   useEffect(() => {
     if (data[0]) {
@@ -13,7 +28,7 @@ const ZhikrSection = ({ data }) => {
       for (const key in data[0].zhikr) {
         need.push(key);
       }
-      
+
       setZhikrs([...need]);
       setActive(need[0]);
       setLoad(false);
@@ -23,16 +38,25 @@ const ZhikrSection = ({ data }) => {
   return (
     <>
       {load ? (
-        <Loading />
+        <section className="w-full h-80">
+          <Loading dashboard={true} />
+        </section>
       ) : (
-        <div className="flex flex-col gap-2">
-          <section className="flex gap-2 w-full overflow-x-auto no-scrollbar">
+        <div className="flex flex-col relative gap-2">
+          <section
+            ref={wrapper}
+            className={`flex transition duration-300 origin-top-right ${menu ? "scale-100" : "scale-0"} flex-col z-100 bg-primary border border-second/30 rounded-xl p-2 absolute gap-2 w-full overflow-x-auto no-scrollbar`}
+          >
             {zhikrs.map((zhikr, i) => (
               <p
-                onClick={() => setActive(zhikr)}
+                ref={(el) => (zhikrRef.current[i] = el)}
+                onClick={() => {
+                  setMenu(!menu);
+                  setActive(zhikr);
+                }}
                 data-name={zhikr}
-                className={`bg-black text-white p-1 rounded-lg
-                ${active == zhikr ? "bg-green-500" : ""}
+                className={`grow w-max p-1
+                ${active == zhikr ? "text-confirm" : "text-second"}
                 `}
                 key={i}
               >
@@ -40,7 +64,21 @@ const ZhikrSection = ({ data }) => {
               </p>
             ))}
           </section>
-          <ZhikrCalndar data={data} curr={active} />
+          <div className="flex justify-between items-center">
+            <p className="bg-confirm text-primary font-bold capitalize text-center p-2 w-max px-4 rounded-lg">
+              {active}
+            </p>
+            <p className="bg-second/10 p-2 rounded-lg animate-cta-2">
+              Your plan: <span className="font-bold text-accent">{data[today - 1].zhikr[active].limit}</span>
+            </p>
+            <MenuIcon
+              ref={menuRef}
+              onClick={() => setMenu(true)}
+              className={`z-1000 pr-2 ${menu ? "hidden" : "block"}`}
+            />
+            <X className={`z-1000 pr-2 ${menu ? "block" : "hidden"}`} />
+          </div>
+          <ZhikrCalndar curr={active} />
         </div>
       )}
     </>

@@ -15,8 +15,7 @@ const useRefresh = async (path, method = null, data = null) => {
     const res = await api.delete(path);
     return res.data;
   } catch (error) {
-    console.log(error);
-    if (error.response.data.message == "token missed") {
+    if (error?.response?.data?.message == "token missed") {
       try {
         await api.get("/auth/refresh");
         useRefresh(path, method, data);

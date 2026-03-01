@@ -70,12 +70,13 @@ const initial = async (req, res) => {
           amount: 0,
           limit: khitamCalculator(userIbada[year].khitam.limit),
         },
-        zhikrs: structuredClone(azhkars), // ✅ CRITICAL FIX
+        zhikrs: structuredClone(azhkars),
         date: Date.now(),
       };
     });
 
     req.user.ibada.set(year, userIbada[year]);
+    req.user.initiated = true;
 
     await req.user.save();
 

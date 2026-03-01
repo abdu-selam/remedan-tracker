@@ -8,7 +8,7 @@ export const todayProgress = (zhikrData) => {
     limit += elem.limit;
   }
 
-  return Math.round(amount / limit) * 100;
+  return Math.round((amount / limit) * 100);
 };
 
 export const totalProgress = (zhikrData) => {
@@ -24,5 +24,5 @@ export const totalProgress = (zhikrData) => {
     }
   }
 
-  return Math.round(amount / limit) * 100;
+  return Math.round((amount / limit) * 100);
 };

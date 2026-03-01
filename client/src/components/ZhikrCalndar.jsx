@@ -1,19 +1,44 @@
 import { useEffect, useRef, useState } from "react";
 import scheduler from "../utils/calendarScheduler";
 import Alert from "./Alert";
-import api from "../config/api.config";
 import useRefresh from "../hooks/useRefresh";
 import useStore from "../store/useStore";
 import { Check, X } from "lucide-react";
+import Loading from "./Loading";
 
-const ZhikrCalndar = ({ data, curr }) => {
+const ZhikrCalndar = ({ curr }) => {
   const store = useStore();
-  const [maxDays, grigorian, days, today, starter, updatedData] = scheduler(
-    Number(store.user.today),
-    data,
-    "zhikr",
-    curr,
-  );
+  const data = store.user.ibada.zhikr.data;
+  const [maxDays, setMaxDays] = useState([]);
+  const [grigorian, setGrigorian] = useState([]);
+  const [days, setDays] = useState([]);
+  const [today, setToday] = useState(0);
+  const [starter, setStarter] = useState(0);
+  const [updatedData, setUpdatedData] = useState([]);
+
+  const [load, setLoad] = useState(true);
+
+  useEffect(() => {
+    setLoad(true);
+    const [maxDays, grigorian, days, today, starter, updatedData] = scheduler(
+      Number(store.user.today),
+      data,
+      "zhikr",
+      curr,
+    );
+
+    setMaxDays(maxDays);
+    setGrigorian(grigorian);
+    setDays(days);
+    setToday(today);
+    setStarter(starter);
+    setUpdatedData(updatedData);
+
+    setTimeout(() => {
+      setLoad(false);
+    }, 100);
+  }, [curr]);
+
   const divRef = useRef();
 
   const [focused, setFocused] = useState(false);
@@ -108,107 +133,117 @@ const ZhikrCalndar = ({ data, curr }) => {
       <section className="flex flex-col gap-3">
         {days.map((day, i) => (
           <div
-            className="grid place-content-center border font-bold text-[0.6rem] rounded-lg p-1 py-2 w-16"
+            style={{
+              animationDelay: `${i * 100}ms`,
+            }}
+            className={`grid place-content-center border font-bold text-[0.65rem] rounded-lg p-1 py-2 w-16 bg-second/20 animate-days opacity-0`}
             key={i}
           >
             {day}
           </div>
         ))}
       </section>
-      <section className="grid w-full grid-cols-5 grid-rows-7 grid-flow-col gap-1 gap-y-3">
-        {["night", "morning", "sleep"].includes(curr)
-          ? maxDays.map((day, i) => (
-              <div
-                key={i}
-                className={`relative w-full ${i < starter || i > 29 + starter ? "text-black/50" : "text-black"}`}
-              >
+      {load ? (
+        <section className="w-full">
+          <Loading dashboard={true} />
+        </section>
+      ) : (
+        <section className="grid w-full grid-cols-5 grid-rows-7 grid-flow-col gap-1 gap-y-3 animate-auth">
+          {["night", "morning", "sleep"].includes(curr)
+            ? maxDays.map((day, i) => (
                 <div
-                  className={`w-full h-full border rounded-lg text-center grid place-content-center 
-                    ${today == maxDays[i] && i >= starter && i <= 29 + starter ? "border-green-600 text-green-600" : ""}
-                    `}
-                  data-day={day}
-                  data-i={i}
-                  data-val={updatedData[i]?.amount != 0}
-                  onClick={
-                    today == maxDays[i] && i >= starter && i <= 29 + starter
-                      ? submitter
-                      : () => {}
-                  }
-                  ref={
-                    today == maxDays[i] && i >= starter && i <= 29 + starter
-                      ? divRef
-                      : null
-                  }
+                  key={i}
+                  className={`relative w-full ${i < starter || i > 29 + starter ? "text-second/50" : "text-second"}`}
                 >
-                  {updatedData[i]?.amount ? (
-                    <Check
-                      className={`w-4 h-4 p-0.5 rounded-full
-                  ${i < starter || i > 29 + starter ? "bg-black/40 text-black/0" : today == maxDays[i] && i >= starter && i <= 29 + starter ? "bg-green-500 text-white" : "bg-green-500/50 text-white"}
+                  <div
+                    className={`w-full h-full border rounded-lg text-center grid place-content-center 
+                    ${today == maxDays[i] && i >= starter && i <= 29 + starter ? "border-confirm text-confirm  shadow-[0_0_0.4rem_var(--color-confirm)] animate-cta-2" : ""}
+                    `}
+                    data-day={day}
+                    data-i={i}
+                    data-val={updatedData[i]?.amount != 0}
+                    onClick={
+                      today == maxDays[i] && i >= starter && i <= 29 + starter
+                        ? submitter
+                        : () => {}
+                    }
+                    ref={
+                      today == maxDays[i] && i >= starter && i <= 29 + starter
+                        ? divRef
+                        : null
+                    }
+                  >
+                    {updatedData[i]?.amount ? (
+                      <Check
+                        className={`w-4 h-4 p-0.5 rounded-full
+                  ${i < starter || i > 29 + starter ? "bg-black/40 text-black/0" : today == maxDays[i] && i >= starter && i <= 29 + starter ? "bg-confirm text-second" : "bg-confirm/50 text-second"}
                   `}
-                    ></Check>
-                  ) : (
-                    <X
-                      className={`w-4 h-4 p-0.5 rounded-full 
-                  ${i < starter || i > 29 + starter ? "bg-black/40 text-black/0" : today == maxDays[i] && i >= starter && i <= 29 + starter ? "bg-red-500 text-white" : "bg-red-500/50 text-white"}
+                      ></Check>
+                    ) : (
+                      <X
+                        className={`w-4 h-4 p-0.5 rounded-full 
+                  ${i < starter || i > 29 + starter ? "bg-black/40 text-black/0" : today == maxDays[i] && i >= starter && i <= 29 + starter ? "bg-denied text-second" : "bg-denied/50 text-second"}
                   `}
-                    ></X>
-                  )}
+                      ></X>
+                    )}
+                  </div>
+                  <p
+                    className={`absolute w-4 text-[0.5rem] z-10 aspect-square grid place-content-center border rounded-full -right-2/5 -bottom-4/9 -translate-1/2 font-bold
+              ${i < starter || i > 29 + starter ? "bg-second/80 text-primary" : "bg-second text-primary"}
+              `}
+                  >
+                    {grigorian[i]}
+                  </p>
+                  <p
+                    className={`absolute font-bold w-4 text-[0.5rem] z-10 aspect-square grid place-content-center border rounded-full left-1/10 top-1/8 -translate-1/2
+              ${i < starter || i > 29 + starter ? "bg-accent text-primary" : "bg-confirm text-primary"}
+              `}
+                  >
+                    {day}
+                  </p>
                 </div>
-                <p
-                  className={`absolute w-4 text-[0.5rem] z-10 aspect-square grid place-content-center border rounded-full -right-2/5 -bottom-4/9 -translate-1/2
-              ${i < starter || i > 29 + starter ? "bg-neutral-400 text-white" : "bg-black text-white"}
-              `}
+              ))
+            : maxDays.map((day, i) => (
+                <div
+                  key={i}
+                  className={`relative w-full ${i < starter || i > 29 + starter ? "text-second/50" : "text-second"}`}
                 >
-                  {grigorian[i]}
-                </p>
-                <p
-                  className={`absolute w-4 text-[0.5rem] z-10 aspect-square grid place-content-center border rounded-full left-1/10 top-1/8 -translate-1/2
-              ${i < starter || i > 29 + starter ? "bg-green-300 text-white" : "bg-green-500 text-white"}
-              `}
-                >
-                  {day}
-                </p>
-              </div>
-            ))
-          : maxDays.map((day, i) => (
-              <div
-                key={i}
-                className={`relative w-full ${i < starter || i > 29 + starter ? "text-black/50" : "text-black"}`}
-              >
-                <input
-                  className={`w-full h-full border rounded-lg text-center focus:outline-none zhikr-input
-                    ${today == maxDays[i] && i >= starter && i <= 29 + starter ? "border-green-600 text-green-600" : ""}
+                  <input
+                    className={`w-full h-full border rounded-lg text-center focus:outline-none zhikr-input
+                    ${today == maxDays[i] && i >= starter && i <= 29 + starter ? "border-confirm text-confirm shadow-[0_0_0.4rem_var(--color-confirm)] animate-cta-2" : ""}
                     `}
-                  value={updatedData[i]?.amount ?? ""}
-                  readOnly={today != maxDays[i]}
-                  type="text"
-                  disabled={i < starter || i > 29 + starter}
-                  onInput={inputController}
-                  onFocus={
-                    today == maxDays[i] && i >= starter && i <= 29 + starter
-                      ? focusController
-                      : () => {}
-                  }
-                  data-day={day}
-                  onKeyDown={submitter}
-                />
-                <p
-                  className={`absolute w-4 text-[0.5rem] z-10 aspect-square grid place-content-center border rounded-full -right-2/5 -bottom-4/9 -translate-1/2
-              ${i < starter || i > 29 + starter ? "bg-neutral-400 text-white" : "bg-black text-white"}
+                    autoComplete="off"
+                    defaultValue={updatedData[i]?.amount ?? ""}
+                    readOnly={today != maxDays[i]}
+                    type="text"
+                    disabled={i < starter || i > 29 + starter}
+                    onInput={inputController}
+                    onFocus={
+                      today == maxDays[i] && i >= starter && i <= 29 + starter
+                        ? focusController
+                        : () => {}
+                    }
+                    data-day={day}
+                    onKeyDown={submitter}
+                  />
+                  <p
+                    className={`absolute w-4 text-[0.5rem] z-10 aspect-square grid place-content-center border rounded-full -right-2/5 -bottom-4/9 -translate-1/2 font-bold
+              ${i < starter || i > 29 + starter ? "bg-second/80 text-primary" : "bg-second text-primary"}
               `}
-                >
-                  {grigorian[i]}
-                </p>
-                <p
-                  className={`absolute w-4 text-[0.5rem] z-10 aspect-square grid place-content-center border rounded-full left-1/10 top-1/8 -translate-1/2
-              ${i < starter || i > 29 + starter ? "bg-green-300 text-white" : "bg-green-500 text-white"}
+                  >
+                    {grigorian[i]}
+                  </p>
+                  <p
+                    className={`absolute font-bold w-4 text-[0.5rem] z-10 aspect-square grid place-content-center border rounded-full left-1/10 top-1/8 -translate-1/2
+              ${i < starter || i > 29 + starter ? "bg-accent text-primary" : "bg-confirm text-primary"}
               `}
-                >
-                  {day}
-                </p>
-              </div>
-            ))}
-      </section>
+                  >
+                    {day}
+                  </p>
+                </div>
+              ))}
+        </section>
+      )}
     </section>
   );
 };

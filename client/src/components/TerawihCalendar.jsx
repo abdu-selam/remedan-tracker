@@ -71,22 +71,25 @@ const TerawihCalendar = ({ data }) => {
       <section className="flex flex-col gap-3">
         {days.map((day, i) => (
           <div
-            className="grid place-content-center border font-bold text-[0.6rem] rounded-lg p-1 py-2 w-16"
+            style={{
+              animationDelay: `${i * 100}ms`
+            }}
+            className={`grid place-content-center border font-bold text-[0.65rem] rounded-lg p-1 py-2 w-16 bg-second/20 animate-days opacity-0`}
             key={i}
           >
             {day}
           </div>
         ))}
       </section>
-      <section className="grid grow grid-cols-5 grid-rows-7 grid-flow-col gap-1 gap-y-3">
+      <section className="grid grow grid-cols-5 grid-rows-7 grid-flow-col gap-1 gap-y-3 animate-auth">
         {maxDays.map((day, i) => (
           <div
             key={i}
-            className={`relative w-full ${i < starter || i > 29 + starter ? "text-black/50" : "text-black"}`}
+            className={`relative w-full ${i < starter || i > 29 + starter ? "text-second/50" : "text-second"}`}
           >
             <div
               className={`w-full h-full border rounded-lg text-center grid place-content-center 
-                    ${today == maxDays[i] && i >= starter && i <= 29 + starter ? "border-green-600 text-green-600" : ""}
+                    ${today == maxDays[i] && i >= starter && i <= 29 + starter ? "border-confirm text-confirm  shadow-[0_0_0.4rem_var(--color-confirm)] animate-cta-2" : ""}
                     `}
               data-day={day}
               data-i={i}
@@ -105,27 +108,27 @@ const TerawihCalendar = ({ data }) => {
               {updatedData[i]?.done ? (
                 <Check
                   className={`w-4 h-4 p-0.5 rounded-full
-                  ${i < starter || i > 29 + starter ? "bg-black/40 text-black/0" : today == maxDays[i] && i >= starter && i <= 29 + starter ? "bg-green-500 text-white" : "bg-green-500/50 text-white"}
+                  ${i < starter || i > 29 + starter ? "bg-black/40 text-black/0" : today == maxDays[i] && i >= starter && i <= 29 + starter ? "bg-confirm text-second" : "bg-confirm/50 text-second"}
                   `}
                 ></Check>
               ) : (
                 <X
                   className={`w-4 h-4 p-0.5 rounded-full 
-                  ${i < starter || i > 29 + starter ? "bg-black/40 text-black/0" : today == maxDays[i] && i >= starter && i <= 29 + starter ? "bg-red-500 text-white" : "bg-red-500/50 text-white"}
+                  ${i < starter || i > 29 + starter ? "bg-black/40 text-black/0" : today == maxDays[i] && i >= starter && i <= 29 + starter ? "bg-denied text-second" : "bg-denied/50 text-second"}
                   `}
                 ></X>
               )}
             </div>
             <p
-              className={`absolute w-4 text-[0.5rem] z-10 aspect-square grid place-content-center border rounded-full -right-2/5 -bottom-4/9 -translate-1/2
-              ${i < starter || i > 29 + starter ? "bg-neutral-400 text-white" : "bg-black text-white"}
+              className={`absolute w-4 text-[0.5rem] z-10 aspect-square grid place-content-center border rounded-full -right-2/5 -bottom-4/9 -translate-1/2 font-bold
+              ${i < starter || i > 29 + starter ? "bg-second/80 text-primary" : "bg-second text-primary"}
               `}
             >
               {grigorian[i]}
             </p>
             <p
-              className={`absolute w-4 text-[0.5rem] z-10 aspect-square grid place-content-center border rounded-full left-1/10 top-1/8 -translate-1/2
-              ${i < starter || i > 29 + starter ? "bg-green-300 text-white" : "bg-green-500 text-white"}
+              className={`absolute font-bold w-4 text-[0.5rem] z-10 aspect-square grid place-content-center border rounded-full left-1/10 top-1/8 -translate-1/2
+              ${i < starter || i > 29 + starter ? "bg-accent text-primary" : "bg-confirm text-primary"}
               `}
             >
               {day}

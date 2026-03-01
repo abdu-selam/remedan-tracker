@@ -7,11 +7,11 @@ const Progress = ({curr, max, percent}) => {
         <p>{curr} {percent ? '%': ''}</p>
         <p>{max} {percent ? '%': ''}</p>
       </div>
-      <div className="w-full h-2 overflow-hidden rounded-2xl bg-amber-200">
+      <div className="w-full h-2 overflow-hidden border border-accent rounded-2xl bg-accent">
         <div
-          className="animate-progress h-full bg-black rounded-2xl"
+          className="origin-left animate-progress w-full h-full bg-primary transition duration-300"
           style={{
-            width: `${(curr / max) * 100}%`,
+            transform: `scaleX(${(curr / max)})`,
           }}
         ></div>
       </div>

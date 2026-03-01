@@ -462,6 +462,11 @@ const me = async (req, res) => {
     } else {
       const { email } = verifyAccess(accessToken);
       user = await User.findOne({ email });
+      if (!user) {
+        return res.status(409).json({
+          message: "user not found",
+        });
+      }
     }
 
     const year = `${new Date().getFullYear()}`.trim();
@@ -471,11 +476,12 @@ const me = async (req, res) => {
       user: {
         name: user.name,
         email: user.email,
+        initiated: user.initiated,
         progress: {
           today: totalTodayProgress(user.ibada.get(year), todayHijri()),
           total: totalProgress(user, year),
         },
-        today: todayHijri()
+        today: todayHijri(),
       },
     });
   } catch (error) {

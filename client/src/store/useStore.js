@@ -4,6 +4,7 @@ const useStore = create((set) => ({
   user: {
     name: "",
     email: "",
+    initiated: false,
     log: false,
     alert: false,
     today: 1,
@@ -37,6 +38,11 @@ const useStore = create((set) => ({
   setEmail: (email) =>
     set((state) => ({
       user: { ...state.user, email },
+    })),
+
+  setInitiated: (initiated) =>
+    set((state) => ({
+      user: { ...state.user, initiated },
     })),
 
   setLog: (log) =>

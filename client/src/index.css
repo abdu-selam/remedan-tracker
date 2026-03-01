@@ -2,12 +2,109 @@
 
 @theme {
   --breakpoint-xs: 24rem;
+  --breakpoint-xsl: 27rem;
   --animate-progress: prog 1s ease-in-out;
   --animate-load: load 2s ease infinite alternate;
+  --animate-cta: cta 0.75s ease-in-out infinite alternate;
+  --animate-cta-2: cta-2 0.75s ease-in-out infinite alternate;
+  --animate-auth: auth 1s ease-in-out;
+  --animate-nav: nav 1s ease-in-out;
+  --animate-down: down 1s ease-in-out forwards;
+  --animate-days: days 1s ease-in-out forwards;
+  --animate-opp: opp 1s ease-in-out forwards;
+  --animate-days-2: days-2 1s ease-in-out forwards;
+
+  --color-primary: #020b12;
+  --color-second: #e3f4f2;
+  --color-accent: #429089;
+  --color-confirm: #85d078;
+  --color-denied: #de2831;
 
   @keyframes prog {
     from {
       width: 0%;
+    }
+  }
+
+  @keyframes cta {
+    from {
+      translate: 0 0.5rem;
+    }
+  }
+
+  @keyframes cta-2 {
+    from {
+      translate: 0 0.2rem;
+    }
+  }
+
+  @keyframes auth {
+    from {
+      translate: 0 1rem;
+      opacity: 0;
+    }
+
+    to {
+      translate: 0;
+      opacity: 1;
+    }
+  }
+
+  @keyframes nav {
+    from {
+      translate: -50% 1rem;
+      opacity: 0;
+    }
+
+    to {
+      translate: -50% 0;
+      opacity: 1;
+    }
+  }
+
+  @keyframes down {
+    from {
+      translate: 0 -1rem;
+      opacity: 0;
+    }
+
+    to {
+      translate: 0;
+      opacity: 1;
+    }
+  }
+
+  @keyframes days {
+    from {
+      translate: -1rem 0rem;
+      opacity: 0;
+    }
+
+    to {
+      translate: 0;
+      opacity: 1;
+    }
+  }
+
+  @keyframes opp {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes days-2 {
+    from {
+      translate: 1rem 0rem;
+      opacity: 0;
+    }
+
+    to {
+      translate: 0;
+      opacity: 1;
     }
   }
 
@@ -21,7 +118,6 @@
       width: 7rem;
     }
   }
-
 }
 
 @layer utilities {
@@ -30,7 +126,7 @@
   }
 
   .no-scrollbar {
-    -ms-overflow-style: none; 
-    scrollbar-width: none; 
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

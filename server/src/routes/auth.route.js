@@ -1,4 +1,6 @@
 const { Router } = require("express");
+const rateLimit = require("express-rate-limit");
+
 const {
   signup,
   verifyEmail,
@@ -19,8 +21,14 @@ const {
 
 const route = Router();
 
-route.post("/register", signup);
-route.post("/login", logIn);
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: "Too many requests, please try again later",
+});
+
+route.post("/register", apiLimiter, signup);
+route.post("/login", apiLimiter, logIn);
 route.delete("/logout", protected, logOut);
 
 route.post("/verify", verifyEmail);
