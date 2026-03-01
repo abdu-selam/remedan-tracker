@@ -1,5 +1,5 @@
 import { BookOpen, Sparkles, HeartHandshake, Pen } from "lucide-react";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.webp";
 import Progress from "../components/Progress";
 import useStore from "../store/useStore";
 import QuranCalendar from "../components/QuranCalendar";

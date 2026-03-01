@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.webp";
 import Button from "../components/Button";
 import { BookOpen, Repeat, Moon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -36,9 +36,9 @@ const Home = () => {
     <>
       <div className="max-w-300 p-8 mx-auto sm:min-h-screen flex flex-col justify-between gap-10">
         <header className="flex flex-col justify-center items-center p-3">
-          <figure className="flex flex-col gap-2 items-center animate-down overflow-hidden w-40">
+          <figure className="flex flex-col gap-2 items-center animate-down w-40">
             <img
-              className="rounded-xl border border-accent shadow-[0_0_0.5rem_var(--color-accent)] w-40"
+              className="rounded-xl border border-accent/10 shadow-[0_0_1rem_var(--color-accent)] animate-cta-2 w-40"
               src={logo}
               alt=""
               width={100}

@@ -9,7 +9,7 @@ import {
   Loader,
 } from "lucide-react";
 import Button from "../components/Button";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.webp";
 import api from "../config/api.config";
 import useStore from "../store/useStore";
 import Alert from "../components/Alert";
