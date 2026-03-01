@@ -349,7 +349,14 @@ const Dashboard = () => {
                   <p className="text-[0.7rem] text-center mb-2">
                     {texts[current].plan}
                   </p>
-                  <Routes>
+                  {
+                    current == "quran" ?
+                      <QuranCalendar data={quran.data} /> : 
+                      current == "zhikr" ?
+                        <ZhikrSection /> : 
+                          <TerawihCalendar data={terawih.data} />
+                  }
+                  {/* <Routes>
                     <Route
                       path="quran"
                       element={<QuranCalendar data={quran.data} />}
@@ -362,7 +369,7 @@ const Dashboard = () => {
                       path="terawih"
                       element={<TerawihCalendar data={terawih.data} />}
                     />
-                  </Routes>
+                  </Routes> */}
                 </section>
               </section>
             </main>
