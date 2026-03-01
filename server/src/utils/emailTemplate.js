@@ -362,6 +362,8 @@ const forgotEmail = (data) => {
                           border-radius: 8px;
                           display: flex;
                           gap: 0.3rem;
+                          justify-content: center;
+                          align-items: center;
                         "
                       >
                         <p
