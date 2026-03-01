@@ -57,8 +57,11 @@ const scheduler = (today, data, type = "quran", curr = null) => {
     grigorian.push(current.getDate());
   }
 
-  if (now.getDay() != 0) {
-    for (let i = 0; i < now.getDay(); i++) {
+  const firstDate = new Date(Date.now() - (3600 * 1000 * 24 * (today - 1)));
+  const starter = firstDate.getDay();
+
+  if (starter != 0) {
+    for (let i = 0; i < starter; i++) {
       maxDays.unshift(30 - i);
       maxDays.pop();
       grigorian.unshift(30 - i);
@@ -112,8 +115,6 @@ const scheduler = (today, data, type = "quran", curr = null) => {
       }
     }
   }
-
-  const starter = maxDays.indexOf(1);
 
   return [maxDays, grigorian, days, today, starter, dataInput];
 };
