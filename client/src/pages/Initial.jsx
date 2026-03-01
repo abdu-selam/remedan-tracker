@@ -147,7 +147,7 @@ const Initial = () => {
             </span>
           </button>
           <button
-            className={` items-center border hover:shadow-[0_0_0.6rem_var(--color-accent)] transition duration-300 border-primary w-max place-self-center gap-2 bg-accent p-2 rounded-xl fixed right-1/2 translate-x-1/2 sm:translate-x-76 bottom-8
+            className={` items-center border hover:shadow-[0_0_0.6rem_var(--color-accent)] transition duration-300 border-primary w-max place-self-center gap-2 bg-accent p-2 rounded-xl fixed right-1/2 translate-x-1/2 bottom-8
           ${block ? "flex" : "hidden"}`}
           >
             {fetched ? (
