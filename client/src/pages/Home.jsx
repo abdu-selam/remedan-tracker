@@ -45,93 +45,95 @@ const Home = () => {
             />
           </figure>
         </header>
-        <section className="flex flex-col-reverse  items-center justify-center">
-          <div>
-            <h1 className="text-[1.7rem] font-bold text-center xs:text-4xl sm:text-5xl animate-days">
-              Abidin Remedan Planner
-            </h1>
-            <section className="text-center max-w-md mx-auto mt-4  text-xs md:w-90">
-              <p className="font-bold animate-days-2">
-                Ramadan is not counted in days. It is counted in devotion.
-              </p>
-              <p className="p-2 animate-auth">
-                Abidin Ramadan Tracker is your digital companion for every
-                raka’ah of Terawih, every page of Qur’an, and every whisper of
-                dhikr.
-              </p>
-
-              <div className="flex gap-2 justify-center mt-4">
-                <Link to={"/auth"}>
-                  <Button>Get Started</Button>
-                </Link>
-                <Link to={"/auth?type=log"}>
-                  <Button type={"log"}>Log In</Button>
-                </Link>
-              </div>
-
-              <ul className=" mx-auto w-max flex flex-col items-center gap-2 py-2 border-x-3 rounded-xl px-3.5 font-bold my-8">
-                <li className="animate-days [animation-delay:100]">
-                  Track your nightly prayers.
-                </li>
-                <li className="animate-days [animation-delay:200]">
-                  Mark your Qur’an recitation progress.
-                </li>
-                <li className="animate-days [animation-delay:300]">
-                  Record your daily adhkar.
-                </li>
-              </ul>
-
-              <div className="bg-second text-primary p-2 rounded-xl mb-8 shadow-[0_0_0.5rem_var(--color-second)] animate-cta font-bold">
-                Build consistency, one sincere act at a time.
-              </div>
-
-              <div className="mb-8 flex flex-col gap-3">
-                <p className="animate-opp">
-                  Like a spiritual journal that fits in your pocket
+        <main>
+          <section className="flex flex-col-reverse  items-center justify-center">
+            <div>
+              <h1 className="text-[1.7rem] font-bold text-center xs:text-4xl sm:text-5xl animate-days">
+                Abidin Remedan Planner
+              </h1>
+              <section className="text-center max-w-md mx-auto mt-4  text-xs md:w-90">
+                <p className="font-bold animate-days-2">
+                  Ramadan is not counted in days. It is counted in devotion.
                 </p>
-                <div>
-                  {["Clear", "Simple", "Focused"].map((word, i) => (
-                    <span
-                      style={{
-                        animationDelay: `${i * 100}ms`,
-                      }}
-                      className="px-2 py-1 mx-1 rounded-sm shadow-[0_0_0.1rem_var(--color-second)] animate-opp bg-second/20 font-bold"
-                      key={i}
-                    >
-                      {word}
-                    </span>
-                  ))}
+                <p className="p-2 animate-auth">
+                  Abidin Ramadan Tracker is your digital companion for every
+                  raka’ah of Terawih, every page of Qur’an, and every whisper of
+                  dhikr.
+                </p>
+
+                <div className="flex gap-2 justify-center mt-4">
+                  <Link to={"/auth"}>
+                    <Button>Get Started</Button>
+                  </Link>
+                  <Link to={"/auth?type=log"}>
+                    <Button type={"log"}>Log In</Button>
+                  </Link>
                 </div>
-              </div>
 
-              <p className="bg-accent/10 text-accent font-bold text-sm rounded-xl p-2 mb-4 animate-opp">
-                Because small, consistent deeds grow into mountains.
-              </p>
+                <ul className=" mx-auto w-max flex flex-col items-center gap-2 py-2 border-x-3 rounded-xl px-3.5 font-bold my-8">
+                  <li className="animate-days [animation-delay:100]">
+                    Track your nightly prayers.
+                  </li>
+                  <li className="animate-days [animation-delay:200]">
+                    Mark your Qur’an recitation progress.
+                  </li>
+                  <li className="animate-days [animation-delay:300]">
+                    Record your daily adhkar.
+                  </li>
+                </ul>
 
-              <p className="text-sm animate-down">
-                Track your worship. Strengthen your discipline. Illuminate your
-                Ramadan.
-              </p>
-            </section>
-          </div>
-        </section>
-        <section>
-          <ul className="grid grid-cols-1 place-content-center place-items-center sm:grid-cols-3 gap-6">
-            {features.map((fea, i) => (
-              <li
-                style={{
-                  animationDelay: `${i * 300}ms`,
-                }}
-                key={i}
-                className="flex flex-col items-center rounded-xl p-2 max-w-60 gap-2 animate-days-2 opacity-0"
-              >
-                <span>{fea.icon()}</span>
-                <h2 className="text-sm font-bold ">{fea.name}</h2>
-                <p className="text-sm text-center">{fea.description}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
+                <div className="bg-second text-primary p-2 rounded-xl mb-8 shadow-[0_0_0.5rem_var(--color-second)] animate-cta font-bold">
+                  Build consistency, one sincere act at a time.
+                </div>
+
+                <div className="mb-8 flex flex-col gap-3">
+                  <p className="animate-opp">
+                    Like a spiritual journal that fits in your pocket
+                  </p>
+                  <div>
+                    {["Clear", "Simple", "Focused"].map((word, i) => (
+                      <span
+                        style={{
+                          animationDelay: `${i * 100}ms`,
+                        }}
+                        className="px-2 py-1 mx-1 rounded-sm shadow-[0_0_0.1rem_var(--color-second)] animate-opp bg-second/20 font-bold"
+                        key={i}
+                      >
+                        {word}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <p className="bg-accent/10 text-accent font-bold text-sm rounded-xl p-2 mb-4 animate-opp">
+                  Because small, consistent deeds grow into mountains.
+                </p>
+
+                <p className="text-sm animate-down">
+                  Track your worship. Strengthen your discipline. Illuminate
+                  your Ramadan.
+                </p>
+              </section>
+            </div>
+          </section>
+          <section>
+            <ul className="grid grid-cols-1 place-content-center place-items-center sm:grid-cols-3 gap-6">
+              {features.map((fea, i) => (
+                <li
+                  style={{
+                    animationDelay: `${i * 300}ms`,
+                  }}
+                  key={i}
+                  className="flex flex-col items-center rounded-xl p-2 max-w-60 gap-2 animate-days-2 opacity-0"
+                >
+                  <span>{fea.icon()}</span>
+                  <h2 className="text-sm font-bold ">{fea.name}</h2>
+                  <p className="text-sm text-center">{fea.description}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </main>
       </div>
       <footer className="bg-second/5 text-second/90 flex flex-col justify-center items-center p-10 text-sm gap-4">
         <p className="font-bold">Abidin Ramadan Tracker</p>
