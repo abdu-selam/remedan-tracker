@@ -112,12 +112,14 @@ const verifyEmail = async (req, res) => {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       maxAge: 15 * 60 * 1000,
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
     });
 
     user.refresh.push({ token: refreshToken });
@@ -184,12 +186,14 @@ const logIn = async (req, res) => {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       maxAge: 15 * 60 * 1000,
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
     });
 
     user.refresh.push({ token: refreshToken });
@@ -373,12 +377,14 @@ const refreshTokenFunc = async (req, res) => {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       maxAge: 15 * 60 * 1000,
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
     });
 
     res.cookie("refreshToken", refresh_Token, {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
     });
 
     user.refresh = user.refresh.filter((t) => t.token != refreshToken);
@@ -447,12 +453,14 @@ const me = async (req, res) => {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         maxAge: 15 * 60 * 1000,
+        sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
       });
 
       res.cookie("refreshToken", refresh_Token, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         maxAge: 7 * 24 * 60 * 60 * 1000,
+        sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
       });
 
       user.refresh = user.refresh.filter((t) => t.token != refreshToken);
