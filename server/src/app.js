@@ -7,6 +7,7 @@ const userRoute = require("./routes/user.route");
 const quranRoute = require("./routes/quran.route");
 const terawihRoute = require("./routes/terawih.route");
 const zhikrRoute = require("./routes/zhikr.route");
+const ENV = require("./utils/env");
 
 const app = express();
 
@@ -15,7 +16,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ENV.CLIENT_URL,
     credentials: true,
   }),
 );

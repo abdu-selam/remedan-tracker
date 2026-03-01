@@ -10,6 +10,7 @@ const ENV = {
   MONGODB_URL: process.env.MONGODB_URL,
   SMTP_USER: process.env.SMTP_USER,
   SMTP_KEY: process.env.SMTP_KEY,
+  CLIENT_URL: process.env.CLIENT_URL,
 };
 
 module.exports = ENV;
