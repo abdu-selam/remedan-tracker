@@ -34,6 +34,9 @@ const zhikrAmountExtractor = (data) => {
 
 const totalProgress = (user, year) => {
   const data = user.ibada.get(year);
+  if (!data) {
+    return 0
+  }
   const [zhikrAmount, zhikrLimit] = zhikrAmountExtractor(data);
   const [khitamAmount, khitamLimit] = [data.khitam.amount, data.khitam.limit];
   const [terawwihAmount, terawwihLimit] = [
@@ -48,6 +51,9 @@ const totalProgress = (user, year) => {
 };
 
 const totalTodayProgress = (userData, date) => {
+  if (!userData) {
+    return 0
+  }
   const data = {};
   data[date] = { ...userData[`${date}`] };
   const [zhikrAmount, zhikrLimit] = zhikrAmountExtractor(data);
