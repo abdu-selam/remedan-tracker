@@ -81,14 +81,21 @@ Open your browser at reacts local url to access the app.
 ### 🛠 Technologies Used
 
 Frontend: React, Vite, Tailwind CSS
+<p align="left">
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="40" height="40"/>
+  <img src="https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg" alt="tailwind" width="40" height="40"/>
 
-Backend: Express.js 
+  <img src="https://logo.svgcdn.com/logos/vitejs.svg" alt="vite" width="30" height="30"/>
+</p>
+
+Backend: Express.js , NodeJS
+<p align='start'>
+ <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/express/express-original-wordmark.svg" alt="express" width="40" height="40"/>
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg" alt="nodejs" width="40" height="40"/>
+</p>
 
 Database: Mongodb
-
-Icons: Lucide React Icons
-
-Email: Brevo
+<img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original-wordmark.svg" alt="mongodb" width="40" height="40"/>
 
 ## 🤝 Contributing
 
