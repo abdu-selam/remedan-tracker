@@ -10,6 +10,7 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    update: [String],
     email: {
       type: String,
       required: true,

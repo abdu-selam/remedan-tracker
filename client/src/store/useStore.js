@@ -229,4 +229,35 @@ const useStore = create((set) => ({
     })),
 }));
 
+export const useLocalStore = create((set) => ({
+  updated: [],
+
+  dashboard: [
+    {
+      text: "This green animated box shows your today's data. To update it, click it, enter the amount you read from the Quran, then press 'Enter' or click the 'Update' button at the top.",
+      style: "top-80 left-10",
+    },
+    {
+      text: "These three buttons help you navigate through your Quran, Zhikr, and Terawih progress.",
+      style: "bottom-20 left-10",
+    },
+    {
+      text: "This is your daily and mothly progress!",
+      style: "top-27 left-20",
+    },
+  ],
+
+  zhikr: [
+    {
+      text: "Click this menu button to view different Zhikr plans.",
+      style: "top-50  left-15",
+    },
+  ],
+
+  setUpdated: (newUpdate) =>
+    set((state) => ({
+      updated: [...new Set([...state.updated, ...newUpdate])],
+    })),
+}));
+
 export default useStore;

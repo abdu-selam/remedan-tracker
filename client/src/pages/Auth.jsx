@@ -90,7 +90,7 @@ const Auth = () => {
         error.status == 409
           ? "User does not exists please try to register"
           : error.status == 429
-            ? "Please try again after 15 minutes you reached your 15 minutes request limit"
+            ? `Please try again after ${Math.abs(Math.ceil((error.response.data.data - Date.now()) / ( 1000 * 60)))} minutes you reached your 15 minutes request limit`
             : "Please Fill Valid Email Address";
       if (msg == message) {
         return;
@@ -210,7 +210,7 @@ const Auth = () => {
             error.status == 409
               ? "Your email or password is incorrect please try again"
               : error.status == 429
-                ? "Please try again after 15 minutes you reached your 15 minutes request limit"
+                ? `Please try again tomorow you reached your daily code request limit`
                 : "Please Fill Valid Email Address";
           if (msg == message) {
             return;

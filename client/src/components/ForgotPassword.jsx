@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import logo from "../assets/logo.webp";
 import {
   Eye,
@@ -23,6 +23,26 @@ const ForgotPassword = () => {
   const [submiting, setSubmiting] = useState(false);
 
   const navigate = useNavigate();
+
+   useEffect(() => {
+      setTimeout(() => {
+        const message =
+          "Aselamu Aleykum Werahmetullahi Weberekatuh.  Email sent to your email account check your email!";
+  
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+  
+        setType(true);
+        setAlert(true);
+        setMsg(message);
+        timeout = setTimeout(() => {
+          setAlert(false);
+          setMsg("");
+          timeout = null;
+        }, 5000);
+      }, 1000);
+    }, []);
 
   const submitter = async (e) => {
     e.preventDefault();

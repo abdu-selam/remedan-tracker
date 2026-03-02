@@ -107,4 +107,29 @@ const initial = async (req, res) => {
   }
 };
 
-module.exports = { initial };
+const update = async (req, res) => {
+  try {
+    const updated = req.body?.updated;
+    if (!updated) {
+      return res.status(401).json({
+        message: "Update parameter required",
+      });
+    }
+
+    if (!req.user.update.includes(updated)) {
+      req.user.update = [...req.user.update, updated];
+      await req.user.save();
+    }
+
+    return res.status(200).json({
+      message: "Success",
+    });
+  } catch (error) {
+    console.log("Error on the update controller:", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+module.exports = { initial, update };

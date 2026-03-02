@@ -112,14 +112,14 @@ const verifyEmail = async (req, res) => {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       maxAge: 15 * 60 * 1000,
-      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
     });
 
     user.refresh.push({ token: refreshToken });
@@ -186,14 +186,14 @@ const logIn = async (req, res) => {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       maxAge: 15 * 60 * 1000,
-      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
     });
 
     user.refresh.push({ token: refreshToken });
@@ -377,14 +377,14 @@ const refreshTokenFunc = async (req, res) => {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       maxAge: 15 * 60 * 1000,
-      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
     });
 
     res.cookie("refreshToken", refresh_Token, {
       httpOnly: true,
       secure: ENV.NODE_ENV === "production",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
     });
 
     user.refresh = user.refresh.filter((t) => t.token != refreshToken);
@@ -453,18 +453,24 @@ const me = async (req, res) => {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         maxAge: 15 * 60 * 1000,
-        sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
+        sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
       });
 
       res.cookie("refreshToken", refresh_Token, {
         httpOnly: true,
         secure: ENV.NODE_ENV === "production",
         maxAge: 7 * 24 * 60 * 60 * 1000,
-        sameSite: ENV.NODE_ENV === "production" ? "none" : "lax"
+        sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
       });
 
       user.refresh = user.refresh.filter((t) => t.token != refreshToken);
       user.refresh.push({ token: refresh_Token });
+
+      console.log(user.update);
+
+      if (!user.update) {
+        user.update = [];
+      }
 
       await user.save();
     } else {
@@ -475,6 +481,12 @@ const me = async (req, res) => {
           message: "user not found",
         });
       }
+
+      if (!user.update) {
+        user.update = [];
+      }
+
+      await user.save();
     }
 
     const year = `${new Date().getFullYear()}`.trim();
@@ -485,6 +497,7 @@ const me = async (req, res) => {
         name: user.name,
         email: user.email,
         initiated: user.initiated,
+        updated: user.update,
         progress: {
           today: totalTodayProgress(user.ibada.get(year), todayHijri()),
           total: totalProgress(user, year),

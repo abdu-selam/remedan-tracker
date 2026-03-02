@@ -3,6 +3,7 @@ import api from "../config/api.config";
 import useStore from "../store/useStore";
 import { useNavigate } from "react-router-dom";
 import Alert from "./Alert";
+import { Loader } from "lucide-react";
 
 const Validate = () => {
   const tokenRef = useRef();
@@ -20,6 +21,8 @@ const Validate = () => {
   const error = useStore((state) => state.user.alert);
   const setError = useStore((state) => state.setAlert);
   let timeout = null;
+
+  const [load, setLoad] = useState(false);
 
   const counter = () => {
     let num = 59;
@@ -85,6 +88,7 @@ const Validate = () => {
 
   const submitter = async () => {
     const form = tokenRef.current;
+    setLoad(true)
 
     let token = "";
     for (let i = 0; i < 6; i++) {
@@ -120,7 +124,8 @@ const Validate = () => {
           timeout = null;
         }, 5000);
       } else if (error.response.data.message == "Expired Token") {
-        const message = "Token has been expired please click resend for new token!";
+        const message =
+          "Token has been expired please click resend for new token!";
         if (msg == message) {
           return;
         }
@@ -136,6 +141,8 @@ const Validate = () => {
           timeout = null;
         }, 5000);
       }
+
+      setLoad(false)
     }
   };
 
@@ -183,25 +190,28 @@ const Validate = () => {
     <div className="h-screen grid place-content-center">
       <Alert msg={msg} type={type} on={alert} />
       <div className="flex flex-col gap-4 items-center animate-auth">
-        <form
-          onSubmit={nextInput}
-          ref={tokenRef}
-          className="flex gap-1 border w-max p-8 rounded-md "
-        >
-          {[1, 2, 3, 4, 5, 6].map((_, i) => (
-            <input
-              onInput={nextInput}
-              onKeyDown={backFunc}
-              className={`border border-second/50 text-xl p-2 w-8 h-12 rounded-lg focus:outline-none animate-opp`}
-              type="text"
-              readOnly={i != 0}
-              max={1}
-              key={i}
-              name={`token-${i}`}
-              autoComplete="off"
-            />
-          ))}
-        </form>
+        <div className="flex items-center gap-4">
+          <form
+            onSubmit={nextInput}
+            ref={tokenRef}
+            className="flex gap-1 border w-max p-8 rounded-md "
+          >
+            {[1, 2, 3, 4, 5, 6].map((_, i) => (
+              <input
+                onInput={nextInput}
+                onKeyDown={backFunc}
+                className={`border border-second/50 text-xl p-2 w-8 h-12 rounded-lg focus:outline-none animate-opp`}
+                type="text"
+                readOnly={i != 0}
+                max={1}
+                key={i}
+                name={`token-${i}`}
+                autoComplete="off"
+              />
+            ))}
+          </form>
+          <div>{load && <Loader className="animate-spin" />}</div>
+        </div>
         <p className="text-sm flex gap-1 animate-down">
           Dosen't Recieve Verification code?
           <span

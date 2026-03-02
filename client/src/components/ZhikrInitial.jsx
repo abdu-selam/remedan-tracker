@@ -109,6 +109,9 @@ const ZhikrInitial = ({ func, curr, indexes, setIndexes }) => {
     const item = zhikr.filter((z) => z.name == data.name)[0];
 
     if (!item) {
+      if (e.target.matches('input')) {
+        
+      }
       zhikr.push(data);
       const ind = [...indexes];
       ind.push(index);
@@ -116,6 +119,9 @@ const ZhikrInitial = ({ func, curr, indexes, setIndexes }) => {
       setIndexes([...ind]);
       stateChange([...zhikr]);
     } else {
+      if (e.target.matches('input')) {
+        return
+      }
       const need = zhikr.filter((z) => z.name != data.name);
       stateChange([...need]);
       const ind = indexes.filter((i) => i != index);
@@ -140,7 +146,10 @@ const ZhikrInitial = ({ func, curr, indexes, setIndexes }) => {
         <h2 className="text-lg font-bold text-center mb-8 animate-auth">Please choose from the following adhkar. May Allah accept your worship.</h2>
         <section className="grid grid-cols-1 sm:grid-cols-2 place-items-center w-full gap-2">
           {azhkars.map((data, i) => (
-            <div key={i} 
+            <div 
+            onClick={adderToList}
+            data-index={i}
+            key={i} 
             style={{
                   animationDelay: `${i * 100}ms`
                 }}
@@ -157,8 +166,6 @@ const ZhikrInitial = ({ func, curr, indexes, setIndexes }) => {
                   <X data-index={i} className="w-4 h-4" />
                 </span>
                 <span
-                  onClick={adderToList}
-                  data-index={i}
                   className={`${indexes.includes(i) ? "inline" : "hidden"} p-0.5 bg-accent border border-primary rounded-full`}
                 >
                   <Check data-index={i} className="w-4 h-4 text-primary" />

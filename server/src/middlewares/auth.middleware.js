@@ -108,12 +108,12 @@ const forgotProtector = async (req, res, next) => {
     const { created } = user.forgotPassword;
 
     if (created) {
-      const threeDay = 1000 * 60 * 60 * 72;
+      const fifteenMin = 1000 * 60 * 15;
 
-      if (Date.now() - created <= threeDay) {
+      if (Date.now() - created <= fifteenMin) {
         return res.status(429).json({
           message: "limit reached",
-          data: created + threeDay,
+          data: created.getTime() + fifteenMin,
         });
       }
     }

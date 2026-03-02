@@ -7,6 +7,7 @@
   --animate-load: load 2s ease infinite alternate;
   --animate-cta: cta 0.75s ease-in-out infinite alternate;
   --animate-cta-2: cta-2 0.75s ease-in-out infinite alternate;
+  --animate-cta-3: cta-3 0.75s ease-in-out infinite alternate;
   --animate-auth: auth 1s ease-in-out;
   --animate-nav: nav 1s ease-in-out;
   --animate-down: down 1s ease-in-out forwards;
@@ -35,6 +36,12 @@
   @keyframes cta-2 {
     from {
       translate: 0 0.2rem;
+    }
+  }
+
+  @keyframes cta-3 {
+    from {
+      translate: 0 0.05rem;
     }
   }
 

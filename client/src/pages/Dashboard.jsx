@@ -1,9 +1,9 @@
 import { BookOpen, Sparkles, HeartHandshake, Pen } from "lucide-react";
 import logo from "../assets/logo.webp";
 import Progress from "../components/Progress";
-import useStore from "../store/useStore";
+import useStore, { useLocalStore } from "../store/useStore";
 import QuranCalendar from "../components/QuranCalendar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import useRefresh from "../hooks/useRefresh";
 import Alert from "../components/Alert";
 import Loading from "../components/Loading";
@@ -17,12 +17,18 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
+import Teacher from "../components/Teacher";
 
 const Dashboard = () => {
   const location = useLocation();
   const [current, setCurrent] = useState(location.pathname.slice(1));
 
+  const [teacher, setTeacher] = useState(false);
+  const updateNotifies = useLocalStore((state) => state.updated);
+
   const initiated = useStore((state) => state.user.initiated);
+
+  const todayInput = useRef();
 
   const name = useStore((state) => state.user.name);
   const today = useStore((state) => state.user.today);
@@ -75,6 +81,8 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    if (['in','nav','prog'].some(el=>updateNotifies.includes(el))) return
+
     setTimeout(() => {
       const message =
         "Aselamu Aleykum Werahmetullahi Weberekatuh. Don't forget to pray for me 🙏";
@@ -90,7 +98,7 @@ const Dashboard = () => {
         setAlert(false);
         setMsg("");
         timeout = null;
-      }, 7000);
+      }, 5000);
     }, 1000);
   }, []);
 
@@ -249,10 +257,45 @@ const Dashboard = () => {
     fetcher();
   }, [update, current]);
 
+  useEffect(() => {
+    if (load) return;
+
+    if (
+      location.pathname == "/quran" &&
+      !["in", "nav", "prog"].every((ud) => updateNotifies.includes(ud))
+    ) {
+      setTimeout(() => {
+        setTeacher(true);
+      }, 150);
+    }
+
+    if (
+      location.pathname == "/zhikr" &&
+      !["menu"].every((ud) => updateNotifies.includes(ud))
+    ) {
+      setTimeout(() => {
+        setTeacher(true);
+      }, 150);
+    }
+
+    setTimeout(() => {
+      const elem = todayInput.current;
+      const elemPos = elem.getBoundingClientRect().top;
+
+      const offsetPosition = elemPos + window.scrollY - 100;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }, 150);
+  }, [current, load]);
+
   return (
     <>
       <div className="min-h-screen h-max pt-4  flex flex-col justify-between text-second">
         <Alert msg={msg} type={type} on={alert} />
+        {teacher && <Teacher page={current} />}
         <div className="p-3 max-w-95 xs:border w-full grow  xs:border-black/20 rounded-xl mx-auto flex flex-col gap-2 relative mb-4">
           <header className="flex justify-between items-center border p-2 rounded-xl">
             <figure className="flex gap-1 items-center animate-days">
@@ -342,34 +385,23 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </section>
-                <section className="border rounded-xl p-2 items-center gap-1 w-full animate-opp">
+                <section
+                  ref={todayInput}
+                  className="border rounded-xl p-2 items-center gap-1 w-full animate-opp"
+                >
                   <h3 className="text-center border border-second rounded-xl mb-2 mx-auto w-max p-1 px-4 font-bold">
                     2026 / 1447
                   </h3>
                   <p className="text-[0.7rem] text-center mb-2">
                     {texts[current].plan}
                   </p>
-                  {
-                    current == "quran" ?
-                      <QuranCalendar data={quran.data} /> : 
-                      current == "zhikr" ?
-                        <ZhikrSection /> : 
-                          <TerawihCalendar data={terawih.data} />
-                  }
-                  {/* <Routes>
-                    <Route
-                      path="quran"
-                      element={<QuranCalendar data={quran.data} />}
-                    />
-                    <Route
-                      path="zhikr"
-                      element={<ZhikrSection />}
-                    />
-                    <Route
-                      path="terawih"
-                      element={<TerawihCalendar data={terawih.data} />}
-                    />
-                  </Routes> */}
+                  {current == "quran" ? (
+                    <QuranCalendar data={quran.data} />
+                  ) : current == "zhikr" ? (
+                    <ZhikrSection />
+                  ) : (
+                    <TerawihCalendar data={terawih.data} />
+                  )}
                 </section>
               </section>
             </main>
