@@ -274,7 +274,7 @@ const ZhikrCalndar = ({ curr }) => {
                       type="text"
                       disabled={i < starter || i > 29 + starter}
                       onInput={inputController}
-                      onFocus={
+                      onClick={
                         today == maxDays[i] && i >= starter && i <= 29 + starter
                           ? () => setFocus("focus")
                           : () => {}

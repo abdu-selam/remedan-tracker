@@ -49,7 +49,7 @@ const Teacher = ({ page }) => {
       if (
         page == "quran" &&
         updatedDatas.filter((ud) => ["in", "nav", "prog"].includes(ud)).length <
-          2
+          3
       ) {
         const i = updatedDatas.filter((ud) =>
           ["in", "nav", "prog"].includes(ud),

@@ -235,7 +235,7 @@ export const useLocalStore = create((set) => ({
   dashboard: [
     {
       text: "This green animated box shows your today's data. To update it, click it, enter the amount you read from the Quran, then press 'Enter' or click the 'Update' button at the top.",
-      style: "top-80 left-10",
+      style: "top-90 left-10",
     },
     {
       text: "These three buttons help you navigate through your Quran, Zhikr, and Terawih progress.",
@@ -250,7 +250,7 @@ export const useLocalStore = create((set) => ({
   zhikr: [
     {
       text: "Click this menu button to view different Zhikr plans.",
-      style: "top-50  left-15",
+      style: "top-55  left-12",
     },
   ],
 

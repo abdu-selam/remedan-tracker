@@ -63,25 +63,30 @@ const Dashboard = () => {
     quran: {
       text: "Quran",
       icon: () => <BookOpen className="w-4" />,
-      desc: " Remedan is month of Quran recite Quran As much as you can.",
-      plan: "Remedan plan Remedan is month of Quran recite Quran As much as you can",
+      desc: "Let the Quran be your daily companion. Even a few verses read with sincerity can brighten your path.",
+      plan: `“The best among you are those who learn the Qur’an and teach it.”`,
+      ref: `Sahih al-Bukhari 5027`,
     },
     zhikr: {
       text: "Zhikr",
       icon: () => <Sparkles className="w-4" />,
-      desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates, maxime et. Error, voluptatibus harum? Alias natus obcae",
-      plan: "em ipsum dolor sit amet, consectetur adipisicing elit. Voluptates, maxime et. Error, voluptatibus ha",
+      desc: "Keep your tongue moist with the remembrance of Allah. In every whisper of dhikr, the heart finds peace and light.",
+      plan: `
+“The example of the one who remembers his Lord and the one who does not is like the living and the dead.”`,
+
+      ref: `Sahih al-Bukhari 6407`,
     },
     terawih: {
       text: "Terawih",
       icon: () => <HeartHandshake className="w-4" />,
-      desc: "cati ea aspernatur eveniet, veritatis, quo officia autem corporis ullam accusantium quasi ab sapiente!",
-      plan: " ea aspernatur eveniet, veritatis, quo officia autem corporis ullam accusantium quasi ab sapiente",
+      desc: "In the quiet nights of prayer, stand before Allah with hope. Every step to Terawih is a step toward mercy and forgiveness.",
+      plan: `“Whoever stands in prayer during Ramadan with faith and seeking reward will have his past sins forgiven.”`,
+      ref: `Sahih al-Bukhari 37, Sahih Muslim 759`,
     },
   };
 
   useEffect(() => {
-    if (['in','nav','prog'].some(el=>updateNotifies.includes(el))) return
+    if (["in", "nav", "prog"].some((el) => updateNotifies.includes(el))) return;
 
     setTimeout(() => {
       const message =
@@ -392,8 +397,14 @@ const Dashboard = () => {
                   <h3 className="text-center border border-second rounded-xl mb-2 mx-auto w-max p-1 px-4 font-bold">
                     2026 / 1447
                   </h3>
+                  <p className="font-bold text-center mb-2">
+                    The Messenger of Allah ﷺ said:
+                  </p>
                   <p className="text-[0.7rem] text-center mb-2">
                     {texts[current].plan}
+                  </p>
+                  <p className="text-[0.7rem] text-center font-bold text-accent mb-2">
+                    {texts[current].ref}
                   </p>
                   {current == "quran" ? (
                     <QuranCalendar data={quran.data} />
