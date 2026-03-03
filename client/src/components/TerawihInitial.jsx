@@ -21,7 +21,7 @@ const TerawihInitial = ({ func, curr }) => {
       </header>
       <hr className="border-2 border-accent rounded-2xl w-1/2 mx-auto" />
       <main className="flex flex-col items-center gap-4 mt-6 mb-20">
-        <h2 className="text-lg text-center font-bold mb-8 animate-auth">Please choose the number of days you wish to pray.</h2>
+        <h2 className="text-lg text-center font-bold mb-8 animate-auth">Please choose the number of days you wish to pray from Remedan Terawih salah.</h2>
         <section className="grid grid-cols-2 xsl:grid-cols-3 place-items-center w-full gap-2">
           {[
             "one",

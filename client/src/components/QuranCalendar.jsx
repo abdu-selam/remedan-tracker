@@ -148,11 +148,14 @@ const Calender = ({ data }) => {
             </div>
           ))}
         </section>
-        <section className="grid grid-cols-5 grid-rows-7 grid-flow-col gap-1 gap-y-3 animate-auth">
+        <section className="grid grid-cols-5 grid-rows-7 grid-flow-col gap-1 gap-y-3">
           {maxDays.map((day, i) => (
             <div
               key={i}
-              className={`relative w-full ${i < starter || i > 29 + starter ? "text-second/50" : "text-second"}`}
+              style={{
+                animationDelay: `${i * 50}ms`
+              }}
+              className={`relative opacity-0 w-full animate-down ${i < starter || i > 29 + starter ? "text-second/50" : "text-second"}`}
             >
               <input
                 className={`w-full h-full border rounded-lg text-center focus:outline-none 

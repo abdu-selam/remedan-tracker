@@ -138,11 +138,14 @@ const TerawihCalendar = ({ data }) => {
             </div>
           ))}
         </section>
-        <section className="grid grow grid-cols-5 grid-rows-7 grid-flow-col gap-1 gap-y-3 animate-auth">
+        <section className="grid grow grid-cols-5 grid-rows-7 grid-flow-col gap-1 gap-y-3">
           {maxDays.map((day, i) => (
             <div
               key={i}
-              className={`relative w-full ${i < starter || i > 29 + starter ? "text-second/50" : "text-second"}`}
+              style={{
+                animationDelay: `${i * 50}ms`,
+              }}
+              className={`relative w-full animate-down opacity-0 ${i < starter || i > 29 + starter ? "text-second/50" : "text-second"}`}
             >
               <div
                 className={`w-full h-full border rounded-lg text-center grid place-content-center 

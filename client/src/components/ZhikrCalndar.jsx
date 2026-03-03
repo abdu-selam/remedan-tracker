@@ -204,12 +204,15 @@ const ZhikrCalndar = ({ curr }) => {
             <Loading dashboard={true} />
           </section>
         ) : (
-          <section className="grid w-full grid-cols-5 grid-rows-7 grid-flow-col gap-1 gap-y-3 animate-auth">
+          <section className="grid w-full grid-cols-5 grid-rows-7 grid-flow-col gap-1 gap-y-3">
             {["night", "morning", "sleep"].includes(curr)
               ? maxDays.map((day, i) => (
                   <div
                     key={i}
-                    className={`relative w-full ${i < starter || i > 29 + starter ? "text-second/50" : "text-second"}`}
+                    style={{
+                      animationDelay: `${i * 50}ms`,
+                    }}
+                    className={`relative w-full opacity-0 animate-down ${i < starter || i > 29 + starter ? "text-second/50" : "text-second"}`}
                   >
                     <div
                       className={`w-full h-full border rounded-lg text-center grid place-content-center 
@@ -262,7 +265,10 @@ const ZhikrCalndar = ({ curr }) => {
               : maxDays.map((day, i) => (
                   <div
                     key={i}
-                    className={`relative w-full ${i < starter || i > 29 + starter ? "text-second/50" : "text-second"}`}
+                    style={{
+                      animationDelay: `${i * 50}ms`,
+                    }}
+                    className={`relative w-full opacity-0 animate-down ${i < starter || i > 29 + starter ? "text-second/50" : "text-second"}`}
                   >
                     <input
                       className={`w-full h-full border rounded-lg text-center focus:outline-none zhikr-input
