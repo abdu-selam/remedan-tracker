@@ -100,7 +100,7 @@ const Teacher = ({ page }) => {
   return (
     <div
       ref={ref}
-      className={`h-screen max-w-95 w-screen fixed top-0 left-1/2 -translate-x-1/2 z-10000 animate-opp transition duration-300 opacity-100 bg-primary/40 ${curr == "hidden" ? "hidden" : "block"}`}
+      className={`h-dvh max-w-95 w-screen fixed top-0 left-1/2 -translate-x-1/2 z-10000 animate-opp transition duration-300 opacity-100 bg-primary/40 ${curr == "hidden" ? "hidden" : "block"}`}
     >
       <div
         className={`absolute ${style} animate-auth bg-primary text-second p-2 rounded-lg border border-confirm shadow-[0_0_0.5rem_var(--color-confirm)] capitalize max-w-65 flex gap-2 flex-col items-center`}

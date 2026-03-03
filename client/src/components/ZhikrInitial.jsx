@@ -1,59 +1,9 @@
 import { Check, Repeat, X } from "lucide-react";
 import { useRef, useState } from "react";
+import { useStaticStore } from "../store/useStore";
 
 const ZhikrInitial = ({ func, curr, indexes, setIndexes }) => {
-  const azhkars = [
-  {
-    name: "subhanallah",
-    description: "Glorifying Allah and declaring His perfection.",
-    limit: 100
-  },
-  {
-    name: "alhamdulillah",
-    description: "Expressing gratitude and praise to Allah.",
-    limit: 33
-  },
-  {
-    name: "allahu akbar",
-    description: "Affirming that Allah is the Greatest.",
-    limit: 34
-  },
-  {
-    name: "la ilaha illa allah",
-    description: "Declaring the oneness of Allah.",
-    limit: 100
-  },
-  {
-    name: "astaghfirullah",
-    description: "Seeking forgiveness from Allah.",
-    limit: 100
-  },
-  {
-    name: "subhanallahi wa bihamdih",
-    description: "Glory and praise be to Allah.",
-    limit: 100
-  },
-  {
-    name: "subhanallahi al-Azeem",
-    description: "Glorifying Allah, the Most Great.",
-    limit: 100
-  },
-  {
-    name: "la hawla wa la quwwata illa billah",
-    description: "Acknowledging that all power belongs to Allah.",
-    limit: 100
-  },
-  {
-    name: "salawat",
-    description: "Sending blessings upon the Prophet ﷺ.",
-    limit: 100
-  },
-  {
-    name: "rabbi ighfir li",
-    description: "Asking Allah for forgiveness and mercy.",
-    limit: 100
-  }
-];
+  const azhkars = useStaticStore((state) => state.azhkars);
   const divRef = useRef();
 
   const [click, setClick] = useState(false);
@@ -109,8 +59,7 @@ const ZhikrInitial = ({ func, curr, indexes, setIndexes }) => {
     const item = zhikr.filter((z) => z.name == data.name)[0];
 
     if (!item) {
-      if (e.target.matches('input')) {
-        
+      if (e.target.matches("input")) {
       }
       zhikr.push(data);
       const ind = [...indexes];
@@ -119,8 +68,8 @@ const ZhikrInitial = ({ func, curr, indexes, setIndexes }) => {
       setIndexes([...ind]);
       stateChange([...zhikr]);
     } else {
-      if (e.target.matches('input')) {
-        return
+      if (e.target.matches("input")) {
+        return;
       }
       const need = zhikr.filter((z) => z.name != data.name);
       stateChange([...need]);
@@ -133,8 +82,8 @@ const ZhikrInitial = ({ func, curr, indexes, setIndexes }) => {
     <div>
       <header className="flex flex-col items-center gap-2 mt-12 mb-6 text-second">
         <h1 className="text-xl xs:text-2xl font-bold text-center animate-down">
-          <Repeat className="inline"/> Moments of Remembrance
-          </h1>
+          <Repeat className="inline" /> Moments of Remembrance
+        </h1>
         <p className="text-sm max-w-120 text-center animate-days">
           In the quiet of your day, every dhikr is a whisper to the heart. Each
           tasbih, each praise, draws you closer to peace, softens the soul, and
@@ -143,17 +92,21 @@ const ZhikrInitial = ({ func, curr, indexes, setIndexes }) => {
       </header>
       <hr className="border-2 border-accent rounded-2xl w-1/2 mx-auto" />
       <main className="flex flex-col items-center gap-4 mt-6 mb-20 text-second">
-        <h2 className="text-lg font-bold text-center mb-8 animate-auth">Please choose from the following adhkar. May Allah accept your worship.</h2>
+        <h2 className="text-lg font-bold text-center mb-8 animate-auth">
+          Please choose from the following adhkar. May Allah accept your
+          worship.
+        </h2>
         <section className="grid grid-cols-1 sm:grid-cols-2 place-items-center w-full gap-2">
           {azhkars.map((data, i) => (
-            <div 
-            onClick={adderToList}
-            data-index={i}
-            key={i} 
-            style={{
-                  animationDelay: `${i * 100}ms`
-                }}
-            className="border rounded-xl w-full max-w-80 pb-2 overflow-hidden animate-down opacity-0">
+            <div
+              onClick={adderToList}
+              data-index={i}
+              key={i}
+              style={{
+                animationDelay: `${i * 100}ms`,
+              }}
+              className="border rounded-xl w-full max-w-80 pb-2 overflow-hidden animate-down opacity-0"
+            >
               <div
                 ref={divRef}
                 className={`flex items-center py-1 px-2 justify-between w-full ${indexes.includes(i) ? "bg-confirm text-primary" : "bg-second text-primary"}`}
@@ -171,7 +124,7 @@ const ZhikrInitial = ({ func, curr, indexes, setIndexes }) => {
                   <Check data-index={i} className="w-4 h-4 text-primary" />
                 </span>
                 <p className="w-9/10 text-sm pl-1 font-bold capitalize">
-                   {data.name}
+                  {data.name}
                 </p>
                 <input
                   className={`text-sm border p-1 w-12 text-center rounded-lg ${indexes.includes(i) ? "bg-accent text-primary font-bold" : "bg-primary/70 text-primary"} focus:outline-none focus:border-green-500`}

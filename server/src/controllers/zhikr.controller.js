@@ -154,11 +154,61 @@ const updatePlan = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log("Error on the update quran controller", error);
+    console.log("Error on the update zhikr controller", error);
     res.status(500).json({
       message: "Internal server error",
     });
   }
 };
 
-module.exports = { getData, tick, updatePlan };
+const addZhikr = async (req, res) => {
+  try {
+    const { zhikrs } = req.body;
+    const toAdd = [];
+    const year = `${new Date().getFullYear()}`;
+
+    zhikrs.forEach((zh) => {
+      if (!req.user.ibada.get(year)["1"].zhikrs[zh.name] || zh.name) {
+        const obj = {
+          name: zh.name,
+          description: zh.description ? zh.description : "Zhikr",
+          limit: Number(zh.limit) ? Number(zh.limit) : 1,
+        };
+
+        toAdd.push(obj)
+      }
+    });
+
+    if (toAdd.length == 0) {
+      return res.status(401).json({
+        message: "Provide proper zhikr data",
+      });
+    }
+
+    const dates = Array.from({ length: 30 }, (_, i) => `${i + 1}`);
+
+    dates.forEach((date) => {
+      toAdd.forEach((zh)=>{
+        req.user.ibada.get(year)[date].zhikrs[zh.name] = {
+          description: zh.description,
+          limit: zh.limit,
+          amount: 0,
+        };
+        req.user.markModified(`ibada.${year}.${date}.zhikrs`);
+      })
+    });
+
+    await req.user.save();
+    res.status(200).json({
+      message: "Success",
+      data: `${toAdd.length} zikrs added`,
+    });
+  } catch (error) {
+    console.log("Error on the add zhikr controller", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+module.exports = { getData, tick, updatePlan, addZhikr };

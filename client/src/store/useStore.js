@@ -250,7 +250,7 @@ export const useLocalStore = create((set) => ({
   zhikr: [
     {
       text: "Click this menu button to view different Zhikr plans.",
-      style: "top-55  left-12",
+      style: "top-60 right-18",
     },
   ],
 
@@ -258,6 +258,61 @@ export const useLocalStore = create((set) => ({
     set((state) => ({
       updated: [...new Set([...state.updated, ...newUpdate])],
     })),
+}));
+
+export const useStaticStore = create((set) => ({
+  azhkars: [
+    {
+      name: "subhanallah",
+      description: "Glorifying Allah and declaring His perfection.",
+      limit: 100,
+    },
+    {
+      name: "alhamdulillah",
+      description: "Expressing gratitude and praise to Allah.",
+      limit: 33,
+    },
+    {
+      name: "allahu akbar",
+      description: "Affirming that Allah is the Greatest.",
+      limit: 34,
+    },
+    {
+      name: "la ilaha illa allah",
+      description: "Declaring the oneness of Allah.",
+      limit: 100,
+    },
+    {
+      name: "astaghfirullah",
+      description: "Seeking forgiveness from Allah.",
+      limit: 100,
+    },
+    {
+      name: "subhanallahi wa bihamdih",
+      description: "Glory and praise be to Allah.",
+      limit: 100,
+    },
+    {
+      name: "subhanallahi al-Azeem",
+      description: "Glorifying Allah, the Most Great.",
+      limit: 100,
+    },
+    {
+      name: "la hawla wa la quwwata illa billah",
+      description: "Acknowledging that all power belongs to Allah.",
+      limit: 100,
+    },
+    {
+      name: "salawat",
+      description: "Sending blessings upon the Prophet ﷺ.",
+      limit: 100,
+    },
+    {
+      name: "rabbi ighfir li",
+      description: "Asking Allah for forgiveness and mercy.",
+      limit: 100,
+    },
+  ],
 }));
 
 export default useStore;

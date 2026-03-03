@@ -303,8 +303,8 @@ const Dashboard = () => {
         {teacher && <Teacher page={current} />}
         <div className="p-3 max-w-95 xs:border w-full grow  xs:border-black/20 rounded-xl mx-auto flex flex-col gap-2 relative mb-4">
           <header className="flex justify-between items-center border p-2 rounded-xl">
-            <figure className="flex gap-1 items-center animate-days">
-              <img className="w-8 rounded-full" src={logo} alt="" width={100} />
+            <figure className="flex gap-2 items-center animate-days">
+              <img className="w-8 border border-accent shadow-[0_0_0.5rem_var(--color-accent)] rounded-full" src={logo} alt="" width={100} />
               <figcaption className="font-bold text-sm">
                 <h1 className="capitalize">{name}</h1>
               </figcaption>
@@ -359,9 +359,9 @@ const Dashboard = () => {
               </section>
 
               <section className="relative flex flex-col gap-2">
-                <div className="w-max absolute top-0 right-1 aspect-square border border-secondary/50 rounded-full p-1.5">
+                {/*<div className="w-max absolute top-0 right-1 aspect-square border border-secondary/50 rounded-full p-1.5">
                   <Pen className="w-3 h-3 fill-primary/50" />
-                </div>
+                </div>*/}
                 <section>
                   <h2 className="text-sm font-bold gap-1 mb-2 flex justify-center items-center animate-auth">
                     {texts[current].icon()}
@@ -418,7 +418,7 @@ const Dashboard = () => {
             </main>
           )}
         </div>
-        <footer className="bg-second/5 text-second/50 flex flex-col justify-center items-center p-10 text-sm gap-4">
+        <footer className="bg-second/5 text-second/50 flex flex-col justify-center items-center p-10 pb-20 text-sm gap-4">
           <p className="font-bold">Abidin Ramadan Tracker</p>
           <hr className="border border-second/30 w-full" />
           <p className="text-center text-xs">
@@ -427,7 +427,7 @@ const Dashboard = () => {
           </p>
 
           <p className="text-center">Stay disciplined. Stay intentional.</p>
-          <p className="text-center opacity-70">
+          <p className="text-center opacity-70 z-0">
             &copy; {new Date().getFullYear()} Abidin Ramadan Tracker. All rights
             reserved.
           </p>
