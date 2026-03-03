@@ -252,6 +252,10 @@ export const useLocalStore = create((set) => ({
       text: "Click this menu button to view different Zhikr plans.",
       style: "top-60 right-18",
     },
+    {
+      text: "You can add new Zhikr plan by clicking \"Add new Zhikr\" button below May Allah accept your worship. don't forget me in your Dua 🙏",
+      style: "top-1/2 left-1/2 -translate-1/2",
+    },
   ],
 
   setUpdated: (newUpdate) =>

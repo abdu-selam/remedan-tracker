@@ -276,7 +276,7 @@ const Dashboard = () => {
 
     if (
       location.pathname == "/zhikr" &&
-      !["menu"].every((ud) => updateNotifies.includes(ud))
+      !["menu", "add"].every((ud) => updateNotifies.includes(ud))
     ) {
       setTimeout(() => {
         setTeacher(true);

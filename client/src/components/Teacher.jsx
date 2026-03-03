@@ -18,7 +18,7 @@ const Teacher = ({ page }) => {
   const index =
     page == "quran"
       ? updatedDatas.filter((ud) => ["in", "nav", "prog"].includes(ud)).length
-      : updatedDatas.filter((ud) => ["menu"].includes(ud)).length;
+      : updatedDatas.filter((ud) => ["menu", "add"].includes(ud)).length;
 
   const text = data[index]?.text;
 
@@ -34,7 +34,7 @@ const Teacher = ({ page }) => {
             setCurr("hidden");
           }
         } else if (page == "zhikr") {
-          if (["menu"].every((ud) => updatedDatas.includes(ud))) {
+          if (["menu", "add"].every((ud) => updatedDatas.includes(ud))) {
             setCurr("hidden");
           }
         }
@@ -44,7 +44,7 @@ const Teacher = ({ page }) => {
       const elem = ref.current;
 
       const quran = ["in", "nav", "prog"];
-      const zhikr = ["menu"];
+      const zhikr = ["menu", "add"];
 
       if (
         page == "quran" &&
@@ -66,9 +66,9 @@ const Teacher = ({ page }) => {
         }
       } else if (
         page == "zhikr" &&
-        updatedDatas.filter((ud) => ["menu"].includes(ud)).length < 1
+        updatedDatas.filter((ud) => ["menu", "add"].includes(ud)).length < 2
       ) {
-        const i = updatedDatas.filter((ud) => ["menu"].includes(ud)).length;
+        const i = updatedDatas.filter((ud) => ["menu", "add"].includes(ud)).length;
         try {
           setLoad(true);
           await useRefresh("/user/updated", "put", {
@@ -103,7 +103,7 @@ const Teacher = ({ page }) => {
       className={`h-dvh max-w-95 w-screen fixed top-0 left-1/2 -translate-x-1/2 z-10000 animate-opp transition duration-300 opacity-100 bg-primary/40 ${curr == "hidden" ? "hidden" : "block"}`}
     >
       <div
-        className={`absolute ${style} animate-auth bg-primary text-second p-2 rounded-lg border border-confirm shadow-[0_0_0.5rem_var(--color-confirm)] capitalize max-w-65 flex gap-2 flex-col items-center`}
+        className={`absolute ${style} animate-opp bg-primary text-second p-2 rounded-lg border border-confirm shadow-[0_0_0.5rem_var(--color-confirm)] capitalize max-w-65 flex gap-2 flex-col items-center`}
       >
         <p className="text-[0.7rem]">{text}</p>
         <button
@@ -112,9 +112,9 @@ const Teacher = ({ page }) => {
             if (load) return;
             setCurr("hidden");
           }}
-          className="bg-second text-primary px-4 py-1 text-sm shadow-[0_0_0.5rem_var(--color-confirm)] rounded-lg self-end"
+          className="bg-second text-primary px-4 py-1 text-sm shadow-[0_0_0.5rem_var(--color-confirm)] rounded-lg self-end font-bold"
         >
-          {load ? <Loader className="animate-spin" /> : "Okay"}
+          {load ? <Loader className="animate-spin stroke-3" /> : "Okay"}
         </button>
       </div>
     </div>
