@@ -4,7 +4,7 @@ const todayHijri = () => {
   const now = new Date();
 
   const today = toHijri(now);
-  if (now.getHours() < 18 && now.getMinutes() < 30) return `${today.getDate() - 1}`;
+  if (now.getHours() < 18) return `${today.getDate() - 1}`;
   return `${today.getDate()}`;
 };
 
