@@ -21,7 +21,7 @@ const ZhikrSection = () => {
   document.body.addEventListener("click", (e) => {
     const navs = [...zhikrRef.current, wrapper.current, menuRef.current];
 
-    if (!navs.contains(e.target)) {
+    if (!navs.includes(e.target)) {
       setMenu(false);
     }
   });

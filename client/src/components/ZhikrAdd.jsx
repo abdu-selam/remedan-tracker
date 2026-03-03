@@ -24,7 +24,7 @@ const ZhikrAdd = ({ closer, zhikrs }) => {
   const [load, setLoad] = useState("none");
 
   const navigate = useNavigate();
-  const inputRefs = useRef([])
+  const inputRefs = useRef([]);
 
   let timeout = null;
 
@@ -102,36 +102,36 @@ const ZhikrAdd = ({ closer, zhikrs }) => {
     setClicked(false);
   };
 
-  const inputNumberController = (e)=>{
-    const elem = e.target
-    const value = elem.value
+  const inputNumberController = (e) => {
+    const elem = e.target;
+    const value = elem.value;
 
-    const lastI = value.length - 1
-    const lastChar = value.slice(lastI)
+    const lastI = value.length - 1;
+    const lastChar = value.slice(lastI);
 
-    const nums = Array.from({length: 10},(_, i)=> `${i}`)
+    const nums = Array.from({ length: 10 }, (_, i) => `${i}`);
     if (!nums.includes(lastChar)) {
-      elem.value = value.slice(0, lastI)
+      elem.value = value.slice(0, lastI);
     }
 
     if (inputRefs.current.includes(elem)) {
-      const name = elem.dataset?.name
-      const i = elem.dataset?.i
+      const name = elem.dataset?.name;
+      const i = elem.dataset?.i;
 
-      const currZhikr = azhkars[i]
-      const limit = Number(elem.value) > 0 ? Number(elem.value) : 1
-      currZhikr.limit = limit
-      const newZhikrsArr = [...azhkars.map(zh=>({...zh}))]
-      newZhikrsArr[i] = {...currZhikr}
-      setAzhkars(newZhikrsArr)
+      const currZhikr = azhkars[i];
+      const limit = Number(elem.value) > 0 ? Number(elem.value) : 1;
+      currZhikr.limit = limit;
+      const newZhikrsArr = [...azhkars.map((zh) => ({ ...zh }))];
+      newZhikrsArr[i] = { ...currZhikr };
+      setAzhkars(newZhikrsArr);
     }
-  }
+  };
 
   const submitter = async (e) => {
     if (load != "none") return;
     setLoad("load");
 
-    const selected = azhkars.filter((zh)=>addZhikrs.includes(zh.name))
+    const selected = azhkars.filter((zh) => addZhikrs.includes(zh.name));
 
     try {
       const res = await useRefresh("/zhikr/new", "post", {
@@ -214,10 +214,13 @@ const ZhikrAdd = ({ closer, zhikrs }) => {
                     </span>
                   </p>
                   <input
-                    ref={(el)=>inputRefs.current[i] = el}
+                    ref={(el) => (inputRefs.current[i] = el)}
                     data-i={i}
+                    style={{
+                      width: `${`${zh.limit}`.length + 6}ch`,
+                    }}
                     data-name={zh.name}
-                    className={`w-10 h-max px-2 py-0.5 rounded-sm text-xs bg-accent text-center focus:outline-0
+                    className={`min-w-10 block h-max px-2 py-0.5 rounded-sm text-xs bg-accent text-center focus:outline-0
                     ${addZhikrs.includes(zh.name) ? "text-primary" : "text-primary/70"}
                     focus:border-primary border border-primary/30 font-bold`}
                     defaultValue={zh.limit}
@@ -246,6 +249,7 @@ const ZhikrAdd = ({ closer, zhikrs }) => {
                     id="name"
                     name="name"
                     type="text"
+                    autoComplete="off"
                     required
                     placeholder="Type zhikr name here"
                   />
@@ -258,6 +262,7 @@ const ZhikrAdd = ({ closer, zhikrs }) => {
                     className="border px-2 py-1.5 rounded-lg border-second/30 focus:outline-0 focus:border-second"
                     id="description"
                     name="description"
+                    autoComplete="off"
                     required
                     type="text"
                     placeholder="Type zhikr description here"
@@ -272,6 +277,7 @@ const ZhikrAdd = ({ closer, zhikrs }) => {
                     id="number"
                     name="number"
                     required
+                    autoComplete="off"
                     type="text"
                     onInput={inputNumberController}
                     placeholder="Type amount you need to say per day"
