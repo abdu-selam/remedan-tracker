@@ -1,56 +1,86 @@
-# 🌙 Abidin Ramadan Tracker
+# Abidin Remedan Tracker
+
+## 📌 Overview
 
 **Abidin Ramadan Tracker** is a web app that helps Muslims track their daily Ramadan worship, including **Quran reading, Terawih prayers, and Azkar (remembrance of Allah)**. Stay consistent, monitor progress, and strengthen your connection with Allah during this blessed month.
 
----
+## Screenshots
 
-## 📌 Features
+| Quran Page                             | Zhikr Page                             | Terawih Page                               |
+| -------------------------------------- | -------------------------------------- | ------------------------------------------ |
+| ![Quran Page](./screenshots/quran.jpg) | ![Zhikr Page](./screenshots/zhikr.jpg) | ![Terawih Page](./screenshots/terawih.jpg) |
 
-- Track daily **Quran reading** progress  
-- Record **Terawih prayers** completion  
-- Log **Azkar** and daily Dhikr  
-- Dashboard with **visual progress indicators**  
-- Notifications and reminders for consistency  
-- Responsive and user-friendly interface  
+## ✨ Features
 
----
+- **Daily Quran Tracking**
+- **Zhikr Daily Tracking with Specified Amount**
+- **Daily Terawih Tracking**:
+- **Add Custom Zhikr According To Your Need**
+- **Responsive Design**
+- **Beautiful Ui**:
 
-## 🚀 Getting Started
+## 🛠️ Technologies Used
 
-### Prerequisites
+### Frontend:
 
-- Node.js v18+  
-- npm or yarn  
+- **React** : For ui building and front end routing
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="40" height="40"/>
+- **Vite** : For Building and bundling
+  <img src="https://logo.svgcdn.com/logos/vitejs.svg" alt="vite" width="30" height="30"/>
+- **Tailwind CSS** : For Styling Ui
+  <img src="https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg" alt="tailwind" width="40" height="40"/>
 
-### Installation
+### Backend:
+
+- Express.js
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/express/express-original-wordmark.svg" alt="express" width="70" height="70"/>
+- NodeJS
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg" alt="nodejs" width="40" height="40"/>
+
+### Database:
+
+- Mongodb
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original-wordmark.svg" alt="mongodb" width="50" height="50"/>
+
+## 🚀 Installation
+
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/abdu-selam/remedan-tracker.git
 ```
 
-Then for backend 
+2. Navigate to the project directory:
 
 ```bash
-cd server
-npm install
+cd remedan-tracker
 ```
 
-Then for Front End 
+3. navigate to front end and back end 
+
+**For Frontend**
 
 ```bash
 cd client
+```
+
+**For Backend**
+
+```bash
+cd server
+```
+
+4. install needed packages for both front end backend
+
+```bash
 npm install
 ```
 
-Running the App
+5. open app in `http://localhost:5173` or given react host
 
-for both backend and frontend 
+<span style="color: red;">⚠ make sure you have been added proper environment variables for both frontend and backend</span> 
 
-```bash
-npm run dev
-```
-
-!DON'T FORGET ENVIRENMENT VARIABLES FOR BOTH BACKEND FRONTEND
+## Environment Variables
 
 Frontend Envirenment is
 
@@ -74,28 +104,19 @@ CLIENT_URL=<client_url>
 EMAIL_KEY=<brevo_api_key>
 ```
 
-### Accessing the app
 
-Open your browser at reacts local url to access the app.
+## 📁 Project Structure
 
-### 🛠 Technologies Used
+```
+calculator-app/
+├── client         # Complete React frontend
+└── server        # Complete Express Backend
+```
 
-Frontend: React, Vite, Tailwind CSS
-<p align="left">
-  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="40" height="40"/>
-  <img src="https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg" alt="tailwind" width="40" height="40"/>
+## 💡 Future Improvements
 
-  <img src="https://logo.svgcdn.com/logos/vitejs.svg" alt="vite" width="30" height="30"/>
-</p>
-
-Backend: Express.js , NodeJS
-<p align='start'>
- <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/express/express-original-wordmark.svg" alt="express" width="40" height="40"/>
-  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg" alt="nodejs" width="40" height="40"/>
-</p>
-
-Database: Mongodb
-<img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original-wordmark.svg" alt="mongodb" width="40" height="40"/>
+- Add Zhikr counter
+- Daily Hadis 
 
 ## 🤝 Contributing
 
